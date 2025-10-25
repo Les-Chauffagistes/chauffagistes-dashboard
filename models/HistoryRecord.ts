@@ -1,9 +1,9 @@
 export interface HistoryRecord {
-    recorded_at: string,
-    hashrate1m: number,
-    hashrate5m: number,
-    hashrate1h: number,
-    hashrate1d: number,
-    hashrate7d: number,
+    timestamp: string,
+    avg_hashrate1m: number,
+    avg_hashrate5m: number,
+    avg_hashrate1h: number,
+    avg_hashrate1d: number,
+    avg_hashrate7d: number,
     avg_weight: number
 }

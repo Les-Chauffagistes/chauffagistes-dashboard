@@ -18,8 +18,8 @@ export function HashrateCell({ workerName, value, period, hashrateKey }: Props) 
   // Extraire seulement les valeurs pertinentes pour cette colonne
   const points =
     stats?.map((s: HistoryRecord) => ({
-      recorded_at: s.recorded_at,
-      value: s[hashrateKey],
+      timestamp: s.timestamp,
+      value: s[`avg_${hashrateKey}`],
     })) ?? [];
 
   return (

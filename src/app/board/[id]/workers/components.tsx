@@ -1,7 +1,7 @@
-import { AllCommunityModule, CellRendererDeferParams, ColDef, EventCellRendererParams, ICellRenderer, ModuleRegistry, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
+import { AllCommunityModule, ColDef, ModuleRegistry, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
 import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react';
 import { Worker } from '../../../../../models/Worker';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import UnitConverter from '../../../../../lib/UnitConverter';
 import { AG_GRID_LOCALE_FR } from "../../../../../locale/fr-FR";
 import { HashrateCell } from './components/HashrateCell';
@@ -10,55 +10,6 @@ import { HashrateCell } from './components/HashrateCell';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-type ChangeHandler = (e: ChangeEvent<HTMLInputElement>) => void
-
-export function ToolBar({
-    hashrate1mHandler,
-    hashrate5mHandler,
-    hashrate1hrHandler,
-    hashrate1dHandler,
-    hashrate7dHandler,
-    hashrate1m,
-    hashrate5m,
-    hashrate1hr,
-    hashrate1d,
-    hashrate7d
-}: {
-    hashrate1mHandler: ChangeHandler,
-    hashrate5mHandler: ChangeHandler,
-    hashrate1hrHandler: ChangeHandler,
-    hashrate1dHandler: ChangeHandler,
-    hashrate7dHandler: ChangeHandler,
-    hashrate1m: boolean,
-    hashrate5m: boolean,
-    hashrate1hr: boolean,
-    hashrate1d: boolean,
-    hashrate7d: boolean
-}) {
-    return <div style={{ display: "flex", gap: 15, margin: "10px" }}>
-        <p>Hashrate: </p>
-        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <input type="checkbox" onChange={(e) => hashrate1mHandler(e)} checked={hashrate1m} />
-            <label htmlFor="hashrate1m">1 min</label>
-        </div>
-        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <input type="checkbox" onChange={(e) => hashrate5mHandler(e)} checked={hashrate5m} />
-            <label htmlFor="hashrate5m">5 min</label>
-        </div>
-        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <input type="checkbox" onChange={(e) => hashrate1hrHandler(e)} checked={hashrate1hr} />
-            <label htmlFor="hashrate1hr">1 hr</label>
-        </div>
-        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <input type="checkbox" onChange={(e) => hashrate1dHandler(e)} checked={hashrate1d} />
-            <label htmlFor="hashrate1d">1 day</label>
-        </div>
-        <div style={{ display: "flex", gap: 5, alignItems: "center" }}>
-            <input type="checkbox" onChange={(e) => hashrate7dHandler(e)} checked={hashrate7d} />
-            <label htmlFor="hashrate7d">7 days</label>
-        </div>
-    </div>
-}
 
 export function MainGrid({
     workers,
@@ -139,7 +90,7 @@ export function MainGrid({
                 //     if (!params.value) return noData;
                 //     return UnitConverter.fromNumberToString(params.value);
                 // },
-                cellRenderer: (params: any) => (
+                cellRenderer: (params: CustomCellRendererProps) => (
                     <HashrateCell
                         workerName={params.data.workername.split(".")[1]}
                         value={params.value}
@@ -160,7 +111,7 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: any) => (
+                cellRenderer: (params: CustomCellRendererProps) => (
                     <HashrateCell
                         workerName={params.data.workername.split(".")[1]}
                         value={params.value}
@@ -179,7 +130,7 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: any) => (
+                cellRenderer: (params: CustomCellRendererProps) => (
                     <HashrateCell
                         workerName={params.data.workername.split(".")[1]}
                         value={params.value}
@@ -199,7 +150,7 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: any) => (
+                cellRenderer: (params: CustomCellRendererProps) => (
                     <HashrateCell
                         workerName={params.data.workername.split(".")[1]}
                         value={params.value}
