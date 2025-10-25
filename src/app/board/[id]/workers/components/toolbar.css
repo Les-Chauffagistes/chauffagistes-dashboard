@@ -1,0 +1,50 @@
+.toolbar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Bouton engrenage */
+.toolbar-toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  color: var(--text-color, #555);
+  transition: transform 0.3s ease;
+}
+.toolbar-toggle:hover {
+  transform: rotate(60deg);
+}
+
+/* Panneau coulissant */
+.toolbar-panel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-width 0.4s ease,
+    opacity 0.3s ease,
+    margin-left 0.3s ease;
+  margin-left: 0;
+  text-wrap: nowrap;
+}
+
+/* Quand ouvert */
+.toolbar-panel.open {
+  max-width: 500px; /* largeur max souhaitée */
+  opacity: 1;
+  margin-left: 10px;
+}
+
+/* Style des cases */
+.toolbar-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+}

@@ -1,10 +1,11 @@
 "use client";
 
-import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Stats } from "@/../models/API Payloads/Stats";
 import { usePathname } from "next/navigation";
-import { getWorkerStats } from "../api";
-import { MainGrid, ToolBar } from "./components";
+import { getWorkerStats } from "@/app/api";
+import { MainGrid } from "./components";
+import { Toolbar } from "./components/Toolbar"
 
 export default function Home() {
     const [workers, setWorkers] = useState<Stats | null>(null);
@@ -40,7 +41,6 @@ export default function Home() {
             setHashrate7d(true);
         }
         getWorkerStats(userID).then((result) => {
-            // console.log(result);
             setWorkers(result);
         });
     }, [userID]);
@@ -50,9 +50,9 @@ export default function Home() {
         localStorage.setItem("activeColumns", JSON.stringify(activeColumnsRef.current));
     }
 
-    function hashrate1mHandler(e: ChangeEvent<HTMLInputElement>) {
-        setHashrate1m(e.target.checked);
-        if (e.target.checked) {
+    function hashrate1mHandler(e: boolean) {
+        setHashrate1m(e);
+        if (e) {
             if (!activeColumnsRef.current.includes("hashrate1m")) {
                 activeColumnsRef.current.push("hashrate1m");
             }
@@ -62,9 +62,9 @@ export default function Home() {
         persistActiveColumns();
     }
 
-    function hashrate5mHandler(e: ChangeEvent<HTMLInputElement>) {
-        setHashrate5m(e.target.checked);
-        if (e.target.checked) {
+    function hashrate5mHandler(e: boolean) {
+        setHashrate5m(e);
+        if (e) {
             if (!activeColumnsRef.current.includes("hashrate5m")) {
                 activeColumnsRef.current.push("hashrate5m");
             }
@@ -74,9 +74,9 @@ export default function Home() {
         persistActiveColumns();
     }
 
-    function hashrate1hrHandler(e: ChangeEvent<HTMLInputElement>) {
-        setHashrate1hr(e.target.checked);
-        if (e.target.checked) {
+    function hashrate1hrHandler(e: boolean) {
+        setHashrate1hr(e);
+        if (e) {
             if (!activeColumnsRef.current.includes("hashrate1hr")) {
                 activeColumnsRef.current.push("hashrate1hr");
             }
@@ -86,9 +86,9 @@ export default function Home() {
         persistActiveColumns();
     }
 
-    function hashrate1dHandler(e: ChangeEvent<HTMLInputElement>) {
-        setHashrate1d(e.target.checked);
-        if (e.target.checked) {
+    function hashrate1dHandler(e: boolean) {
+        setHashrate1d(e);
+        if (e) {
             if (!activeColumnsRef.current.includes("hashrate1d")) {
                 activeColumnsRef.current.push("hashrate1d");
             }
@@ -98,9 +98,9 @@ export default function Home() {
         persistActiveColumns();
     }
 
-    function hashrate7dHandler(e: ChangeEvent<HTMLInputElement>) {
-        setHashrate7d(e.target.checked);
-        if (e.target.checked) {
+    function hashrate7dHandler(e: boolean) {
+        setHashrate7d(e);
+        if (e) {
             if (!activeColumnsRef.current.includes("hashrate7d")) {
                 activeColumnsRef.current.push("hashrate7d");
             }
@@ -110,26 +110,23 @@ export default function Home() {
         persistActiveColumns();
     }
 
+    const options = [
+        { id: "1m", label: "1 min", checked: hashrate1m, onChange: (e: boolean) => hashrate1mHandler(e) },
+        { id: "5m", label: "5 min", checked: hashrate5m, onChange: (e: boolean) => hashrate5mHandler(e) },
+        { id: "1h", label: "1 h", checked: hashrate1hr, onChange: (e: boolean) =>  hashrate1hrHandler(e) },
+        { id: "1d", label: "1 j", checked: hashrate1d, onChange: (e: boolean) =>  hashrate1dHandler(e) },
+        { id: "7d", label: "7 j", checked: hashrate7d, onChange: (e: boolean) =>  hashrate7dHandler(e) },
+    ];
+
     return (
-        <div style={{ flex: 1 }} id="page">
-            <ToolBar {...{
-                hashrate1mHandler,
-                hashrate5mHandler,
-                hashrate1hrHandler,
-                hashrate1dHandler,
-                hashrate7dHandler,
-                hashrate1m,
-                hashrate5m,
-                hashrate1hr,
-                hashrate1d,
-                hashrate7d
-            }} />
+        <div style={{ flex: 1, overflow: "scroll" }} id="page">
+            <Toolbar options={options} />
             <MainGrid workers={workers?.workers || []}
-                hashrate1m={hashrate1m}
-                hashrate5m={hashrate5m}
-                hashrate1hr={hashrate1hr}
-                hashrate1d={hashrate1d}
-                hashrate7d={hashrate7d}
+                isHashrate1mVisible={hashrate1m}
+                isHashrate5mVisible={hashrate5m}
+                isHashrate1hrVisible={hashrate1hr}
+                isHashrate1dVisible={hashrate1d}
+                isHashrate7dVisible={hashrate7d}
             />
         </div>
     );

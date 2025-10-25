@@ -1,9 +1,12 @@
-import { AllCommunityModule, ColDef, ModuleRegistry, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
-import { AgGridReact } from 'ag-grid-react';
+import { AllCommunityModule, CellRendererDeferParams, ColDef, EventCellRendererParams, ICellRenderer, ModuleRegistry, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
+import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react';
 import { Worker } from '../../../../../models/Worker';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import UnitConverter from '../../../../../lib/hashrateConverter';
-import { AG_GRID_LOCALE_FR } from "@/../fr-FR";
+import UnitConverter from '../../../../../lib/UnitConverter';
+import { AG_GRID_LOCALE_FR } from "../../../../../locale/fr-FR";
+import { HashrateCell } from './components/HashrateCell';
+
+
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -57,7 +60,21 @@ export function ToolBar({
     </div>
 }
 
-export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrate1d, hashrate7d }: { workers: Worker[], hashrate1m: boolean, hashrate5m: boolean, hashrate1hr: boolean, hashrate1d: boolean, hashrate7d: boolean }) {
+export function MainGrid({
+    workers,
+    isHashrate1mVisible,
+    isHashrate5mVisible,
+    isHashrate1hrVisible,
+    isHashrate1dVisible,
+    isHashrate7dVisible
+}: {
+    workers: Worker[],
+    isHashrate1mVisible: boolean,
+    isHashrate5mVisible: boolean,
+    isHashrate1hrVisible: boolean,
+    isHashrate1dVisible: boolean,
+    isHashrate7dVisible: boolean
+}) {
     interface CleanWorkerHashrate {
         workername: string
         hashrate1m: number
@@ -112,20 +129,28 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
             filter: true,
             valueFormatter: (params: ValueFormatterParams) => params.value?.split(".")[1],
         }]
-        if (hashrate1m) cols.push(
+        if (isHashrate1mVisible) cols.push(
             {
                 headerName: "Hashrate (1m)",
                 field: "hashrate1m",
                 colId: "hashrate1m",
                 filter: false,
-                valueFormatter: (params: ValueFormatterParams) => {
-                    if (!params.value) return noData;
-                    return UnitConverter.fromNumberToString(params.value);
-                },
+                // valueFormatter: (params: ValueFormatterParams) => {
+                //     if (!params.value) return noData;
+                //     return UnitConverter.fromNumberToString(params.value);
+                // },
+                cellRenderer: (params: any) => (
+                    <HashrateCell
+                        workerName={params.data.workername.split(".")[1]}
+                        value={params.value}
+                        period="30d"
+                        hashrateKey="hashrate1m"
+                    />
+                ),
             }
         )
 
-        if (hashrate5m) cols.push(
+        if (isHashrate5mVisible) cols.push(
             {
                 headerName: "Hashrate (5m)",
                 field: "hashrate5m",
@@ -135,8 +160,16 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
+                cellRenderer: (params: any) => (
+                    <HashrateCell
+                        workerName={params.data.workername.split(".")[1]}
+                        value={params.value}
+                        period="30d"
+                        hashrateKey="hashrate5m"
+                    />
+                ),
             })
-        if (hashrate1hr) cols.push(
+        if (isHashrate1hrVisible) cols.push(
             {
                 headerName: "Hashrate (1h)",
                 field: "hashrate1h",
@@ -146,9 +179,17 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
+                cellRenderer: (params: any) => (
+                    <HashrateCell
+                        workerName={params.data.workername.split(".")[1]}
+                        value={params.value}
+                        period="30d"
+                        hashrateKey="hashrate1h"
+                    />
+                ),
             }
         )
-        if (hashrate1d) cols.push(
+        if (isHashrate1dVisible) cols.push(
             {
                 headerName: "Hashrate (1d)",
                 field: "hashrate1d",
@@ -158,10 +199,18 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
+                cellRenderer: (params: any) => (
+                    <HashrateCell
+                        workerName={params.data.workername.split(".")[1]}
+                        value={params.value}
+                        period="30d"
+                        hashrateKey="hashrate1d"
+                    />
+                ),
             }
         )
 
-        if (hashrate7d) cols.push(
+        if (isHashrate7dVisible) cols.push(
             {
                 headerName: "Hashrate (7d)",
                 field: "hashrate7d",
@@ -171,6 +220,14 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
+                cellRenderer: (params: CustomCellRendererProps) => (
+                    <HashrateCell
+                        workerName={params.data.workername.split(".")[1]}
+                        value={params.value}
+                        period="30d"
+                        hashrateKey="hashrate7d"
+                    />
+                ),
             }
         )
 
@@ -205,20 +262,20 @@ export function MainGrid({ workers, hashrate1m, hashrate5m, hashrate1hr, hashrat
                     return UnitConverter.fromNumberToString(params.value);
                 },
             },
-            {
-                headerName: "Best Ever",
-                field: "bestever",
-                colId: "bestever",
-                filter: false,
-                valueFormatter: (params: ValueFormatterParams) => {
-                    if (!params.value) return noData;
-                    return UnitConverter.fromNumberToString(params.value);
-                },
-            }
+            // {
+            //     headerName: "Best Ever",
+            //     field: "bestever",
+            //     colId: "bestever",
+            //     filter: false,
+            //     valueFormatter: (params: ValueFormatterParams) => {
+            //         if (!params.value) return noData;
+            //         return UnitConverter.fromNumberToString(params.value);
+            //     },
+            // }
         )
 
         return cols.flat()
-    }, [hashrate1d, hashrate1hr, hashrate1m, hashrate5m, hashrate7d]);
+    }, [isHashrate1dVisible, isHashrate1hrVisible, isHashrate1mVisible, isHashrate5mVisible, isHashrate7dVisible]);
     return (
         <div id="workers-grid" className="ag-theme-quartz" style={{ flex: 1, minHeight: 0, minWidth: 0, height: "100%" }}>
             <AgGridReact
