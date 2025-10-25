@@ -2,12 +2,21 @@ import { SparkLineChart, SparkLineChartProps } from '@mui/x-charts';
 import { areaElementClasses, lineElementClasses } from '@mui/x-charts/LineChart';
 import { chartsAxisHighlightClasses } from '@mui/x-charts/ChartsAxisHighlight';
 
-export function HashrateSparkline({ stats }: { stats: { recorded_at: string, value: number }[] }) {
+export function HashrateSparkline({ stats }: { stats: { timestamp: string, value: number }[] }) {
+    const parsed = stats.map((item) => ({
+        x: new Date(item.timestamp), // 🔥 conversion ici
+        y: item.value ?? 0,
+    }));
+
     const settings: SparkLineChartProps = {
         data: stats.map((item) => item.value),
         baseline: 'min',
         margin: { bottom: 0, top: 5, left: 4, right: 0 },
-        xAxis: { id: 'week-axis', data: stats.map((item) => item.recorded_at) },
+        xAxis: {
+            id: 'week-axis',
+            data: parsed.map((item) => item.x),
+            scaleType: 'time',
+        },
         yAxis: {
             domainLimit: () => {
                 if (stats.length === 0) return { min: 0, max: 1 };
