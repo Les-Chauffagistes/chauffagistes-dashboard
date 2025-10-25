@@ -1,12 +1,15 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --orange: #f7931a;
+  --gray: #f2f2f2;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --gray: #1f1f1f;
   }
 }
 
@@ -39,4 +42,17 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+button {
+  cursor: pointer;
+}
+
+button.primary {
+  background-color: var(--orange);
+  color: var(--background);
+  border: unset;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
 }
