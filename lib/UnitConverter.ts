@@ -5,7 +5,6 @@ export default class UnitConverter {
         if (Number.isNaN(number)) throw new Error("Invalid number");
 
         switch (unit) {
-            case "H": return number;
             case "K": return number * 1e3;
             case "M": return number * 1e6;
             case "G": return number * 1e9;
@@ -16,8 +15,8 @@ export default class UnitConverter {
         }
     };
 
-    static fromNumberToString(value: number) {
-        if (value < 1e3) return value + " H";
+    static fromNumberToString(value: number): string {
+        if (value < 1e3) return value.toString();
         else if (value < 1e6) return (value / 1e3).toFixed(2) + " K";
         else if (value < 1e9) return (value / 1e6).toFixed(2) + " M";
         else if (value < 1e12) return (value / 1e9).toFixed(2) + " G";
