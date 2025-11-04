@@ -56,3 +56,20 @@ button.primary {
   border-radius: 0.5rem;
   font-weight: 600;
 }
+
+.ag-header-cell-label {
+  white-space: nowrap;
+}
+
+.custom-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-width: fit-content;
+  overflow: visible !important;
+  white-space: nowrap;
+}
+.custom-header-icon {
+  margin-left: 4px;
+  flex-shrink: 0; /* empêche l'icône d'être réduite */
+}
