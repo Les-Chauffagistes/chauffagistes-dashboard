@@ -1,0 +1,9 @@
+#main-view {
+    display: flex
+}
+
+@media (max-width: 800px) {
+    #main-view {
+        flex-direction: column;
+    }
+}

@@ -4,7 +4,7 @@ import { chartsAxisHighlightClasses } from '@mui/x-charts/ChartsAxisHighlight';
 
 export function HashrateSparkline({ stats }: { stats: { timestamp: string, value: number }[] }) {
     const parsed = stats.map((item) => ({
-        x: new Date(item.timestamp), // 🔥 conversion ici
+        x: new Date(item.timestamp),
         y: item.value ?? 0,
     }));
 
@@ -19,7 +19,7 @@ export function HashrateSparkline({ stats }: { stats: { timestamp: string, value
         },
         yAxis: {
             domainLimit: () => {
-                if (stats.length === 0) return { min: 0, max: 1 };
+                if (stats.length === 0) return { min: 0, max: 1 }; // refactor
                 const values = stats.map(s => s.value ?? 0);
                 const min = Math.min(...values);
                 const max = Math.max(...values);

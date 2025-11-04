@@ -1,60 +1,41 @@
-import { AllCommunityModule, ColDef, ModuleRegistry, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
+import { AllCommunityModule, ColDef, ModuleRegistry, RowClickedEvent, ValueFormatterParams, colorSchemeDark, colorSchemeLight, themeQuartz } from 'ag-grid-community';
 import { AgGridReact, CustomCellRendererProps } from 'ag-grid-react';
-import { Worker } from '../../../../../models/Worker';
+import { Worker } from '../../../../../../models/Worker';
 import { useEffect, useMemo, useState } from 'react';
-import UnitConverter from '../../../../../lib/UnitConverter';
-import { AG_GRID_LOCALE_FR } from "../../../../../locale/fr-FR";
-import { HashrateCell } from './components/HashrateCell';
-
+import UnitConverter from '../../../../../../lib/UnitConverter';
+import { AG_GRID_LOCALE_FR } from "../../../../../../locale/fr-FR";
+import NameCell from './NameCell';
+import { CleanWorkerHashrate } from '../../../../../../models/CleanWorkerHashrate';
+import { HeaderWithInfo } from './HeaderInfo';
+import formatNumber from '../../../../../../lib/NumberFormatter';
 
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 
+
 export function MainGrid({
+    btcPrice,
+    isCommunityPool,
     workers,
     isHashrate1mVisible,
     isHashrate5mVisible,
     isHashrate1hrVisible,
     isHashrate1dVisible,
-    isHashrate7dVisible
+    isHashrate7dVisible,
+    onSelectWorker
 }: {
-    workers: Worker[],
+    btcPrice: number | null
+    isCommunityPool: boolean,
+    workers: CleanWorkerHashrate[],
     isHashrate1mVisible: boolean,
     isHashrate5mVisible: boolean,
     isHashrate1hrVisible: boolean,
     isHashrate1dVisible: boolean,
-    isHashrate7dVisible: boolean
+    isHashrate7dVisible: boolean,
+    onSelectWorker: (worker: Worker) => void
 }) {
-    interface CleanWorkerHashrate {
-        workername: string
-        hashrate1m: number
-        hashrate5m: number
-        hashrate1h: number
-        hashrate1d: number
-        hashrate7d: number
-        lastshare: string
-        shares: number
-        bestshare: number
-        bestever: number
-    }
 
-    function normalizeHashrate(workers: Worker[]): CleanWorkerHashrate[] {
-        return workers.map((worker) => {
-            return {
-                workername: worker.workername,
-                lastshare: worker.lastshare,
-                shares: worker.shares,
-                bestshare: worker.bestshare,
-                bestever: worker.bestever,
-                hashrate1m: UnitConverter.fromStringToNumber(worker.hashrate1m),
-                hashrate5m: UnitConverter.fromStringToNumber(worker.hashrate5m),
-                hashrate1h: UnitConverter.fromStringToNumber(worker.hashrate1hr),
-                hashrate1d: UnitConverter.fromStringToNumber(worker.hashrate1d),
-                hashrate7d: UnitConverter.fromStringToNumber(worker.hashrate7d)
-            }
-        })
-    }
 
     const [myTheme, setMyTheme] = useState(() =>
         themeQuartz.withPart(colorSchemeLight) // valeur par défaut (SSR)
@@ -70,7 +51,8 @@ export function MainGrid({
         return () => mq.removeEventListener("change", update);
     }, []);
 
-    const data = normalizeHashrate(workers);
+    const minHashrateWidth = 130;
+
     const columns = useMemo<ColDef<CleanWorkerHashrate>[]>(() => {
         const noData = "-";
         const cols: ColDef<CleanWorkerHashrate>[] = [{
@@ -79,6 +61,14 @@ export function MainGrid({
             colId: "workername",
             filter: true,
             valueFormatter: (params: ValueFormatterParams) => params.value?.split(".")[1],
+            cellRenderer: (params: CustomCellRendererProps) => (
+                <NameCell
+                    isOnline={params.data.hashrate1m > 0}
+                    workerName={params.data.workername.split(".")[1]}
+                />
+            ),
+            minWidth: 100,
+            floatingFilter: true
         }]
         if (isHashrate1mVisible) cols.push(
             {
@@ -86,18 +76,11 @@ export function MainGrid({
                 field: "hashrate1m",
                 colId: "hashrate1m",
                 filter: false,
-                // valueFormatter: (params: ValueFormatterParams) => {
-                //     if (!params.value) return noData;
-                //     return UnitConverter.fromNumberToString(params.value);
-                // },
-                cellRenderer: (params: CustomCellRendererProps) => (
-                    <HashrateCell
-                        workerName={params.data.workername.split(".")[1]}
-                        value={params.value}
-                        period="30d"
-                        hashrateKey="hashrate1m"
-                    />
-                ),
+                valueFormatter: (params: ValueFormatterParams) => {
+                    if (!params.value) return noData;
+                    return UnitConverter.fromNumberToString(params.value);
+                },
+                minWidth: minHashrateWidth,
             }
         )
 
@@ -111,14 +94,15 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: CustomCellRendererProps) => (
-                    <HashrateCell
-                        workerName={params.data.workername.split(".")[1]}
-                        value={params.value}
-                        period="30d"
-                        hashrateKey="hashrate5m"
-                    />
-                ),
+                // cellRenderer: (params: CustomCellRendererProps) => (
+                //     <HashrateCell
+                //         workerName={params.data.workername.split(".")[1]}
+                //         value={params.value}
+                //         period="30d"
+                //         hashrateKey="hashrate5m"
+                //     />
+                // ),
+                minWidth: minHashrateWidth,
             })
         if (isHashrate1hrVisible) cols.push(
             {
@@ -130,14 +114,15 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: CustomCellRendererProps) => (
-                    <HashrateCell
-                        workerName={params.data.workername.split(".")[1]}
-                        value={params.value}
-                        period="30d"
-                        hashrateKey="hashrate1h"
-                    />
-                ),
+                // cellRenderer: (params: CustomCellRendererProps) => (
+                //     <HashrateCell
+                //         workerName={params.data.workername.split(".")[1]}
+                //         value={params.value}
+                //         period="30d"
+                //         hashrateKey="hashrate1h"
+                //     />
+                // ),
+                minWidth: minHashrateWidth,
             }
         )
         if (isHashrate1dVisible) cols.push(
@@ -150,14 +135,7 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: CustomCellRendererProps) => (
-                    <HashrateCell
-                        workerName={params.data.workername.split(".")[1]}
-                        value={params.value}
-                        period="30d"
-                        hashrateKey="hashrate1d"
-                    />
-                ),
+                minWidth: minHashrateWidth,
             }
         )
 
@@ -171,28 +149,20 @@ export function MainGrid({
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);
                 },
-                cellRenderer: (params: CustomCellRendererProps) => (
-                    <HashrateCell
-                        workerName={params.data.workername.split(".")[1]}
-                        value={params.value}
-                        period="30d"
-                        hashrateKey="hashrate7d"
-                    />
-                ),
             }
         )
 
         cols.push(
-            {
-                headerName: "Last share",
-                field: "lastshare",
-                colId: "lastshare",
-                filter: false,
-                valueFormatter: (params: ValueFormatterParams) => {
-                    if (!params.value) return noData;
-                    return UnitConverter.fromNumberToString(params.value);
-                },
-            },
+            // {
+            //     headerName: "Last share",
+            //     field: "lastshare",
+            //     colId: "lastshare",
+            //     filter: false,
+            //     valueFormatter: (params: ValueFormatterParams) => {
+            //         if (!params.value) return noData;
+            //         return UnitConverter.fromNumberToString(params.value);
+            //     },
+            // },
             {
                 headerName: "Shares",
                 field: "shares",
@@ -222,16 +192,46 @@ export function MainGrid({
             //         if (!params.value) return noData;
             //         return UnitConverter.fromNumberToString(params.value);
             //     },
-            // }
+            // },
+            {
+                headerName: "Poids",
+                colId: "avg_weight",
+                field: "weight",
+                filter: false,
+                sortable: true,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    if (!params.value) return noData;
+                    return formatNumber(params.value.toFixed(1)) + " %";
+                }
+            }
         )
+        if (isCommunityPool) {
+            cols.push(
+                {
+                    headerName: "Récompense",
+                    field: "rewardBtc",
+                    colId: "rewardBtc",
+                    valueFormatter: (params: ValueFormatterParams) => {
+                        if (!params.value) return noData;
+                        return formatNumber(params.value.toFixed(3)) + " ₿ - " + formatNumber((params.value * btcPrice!).toFixed(0)) + " €";
+                    },
+                    headerComponent: HeaderWithInfo,
+                    headerComponentParams: {
+                        displayName: "Récompense",
+                        tooltip: "Approximatif, des frais de transaction s'appliquent",
+                    },
+                    flex: 0
+                }
+            )
+        }
 
         return cols.flat()
-    }, [isHashrate1dVisible, isHashrate1hrVisible, isHashrate1mVisible, isHashrate5mVisible, isHashrate7dVisible]);
+    }, [btcPrice, isCommunityPool, isHashrate1dVisible, isHashrate1hrVisible, isHashrate1mVisible, isHashrate5mVisible, isHashrate7dVisible]);
     return (
-        <div id="workers-grid" className="ag-theme-quartz" style={{ flex: 1, minHeight: 0, minWidth: 0, height: "100%" }}>
+        <div id="workers-grid" className="ag-theme-quartz" style={{ flex: 1, minHeight: 400 }}>
             <AgGridReact
                 theme={myTheme}
-                rowData={data}
+                rowData={workers}
                 columnDefs={columns}
                 defaultColDef={{
                     minWidth: 80,
@@ -241,9 +241,20 @@ export function MainGrid({
                 suppressMovableColumns={true}
                 localeText={AG_GRID_LOCALE_FR}
                 animateRows
+                getRowId={(params) => params.data.workername} // persists selection
                 suppressColumnMoveAnimation={false}
-                enableCellTextSelection
-                rowSelection="multiple"
+                cellSelection={false} // deprecated?
+                suppressCellFocus={true}
+                rowSelection={{
+                    mode: 'singleRow',
+                    checkboxes: false
+                }}
+                onRowClicked={(event: RowClickedEvent) => {
+                    // console.log(event)
+                    event.api.deselectAll();
+                    event.node.setSelected(true);
+                    onSelectWorker(event.data)
+                }}
             />
         </div>
     );
