@@ -15,7 +15,7 @@ export default function WidgetCard({ title, value, Icon }: Readonly<{ title: str
             backgroundColor: "var(--card-background-color)",
             borderRadius: "10px",
             padding: "5px 10px",
-            width: 140,
+            width: 150,
             fontSmooth: "antialiased",
             WebkitFontSmoothing: "antialiased",
         }}>

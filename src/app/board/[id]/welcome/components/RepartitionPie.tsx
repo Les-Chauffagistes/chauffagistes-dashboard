@@ -1,13 +1,13 @@
 "use client";
 
-import * as React from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
-import { Weights } from "../../../../../../models/API Payloads/Weights";
+import { useDrawingArea } from "@mui/x-charts/hooks";
+
 import { useTheme, styled } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useDrawingArea } from "@mui/x-charts/hooks";
 import Typography from '@mui/material/Typography';
 
+import { Weights } from "../../../../../../models/API Payloads/Weights";
 
 
 function getPieData(weights: Weights[], maxOthersPercent = 0.15) {
@@ -61,8 +61,8 @@ export default function RepartitionPie({ weights }: { weights: Weights[] }) {
 
   // Adjust sizes based on screen size
   const size = isSmallScreen ? 250 : 400;
-  const outerRadius = isSmallScreen ? 70 : 140;
-  const innerRadius = isSmallScreen ? 40 : 100;
+  const outerRadius = isSmallScreen ? 70 : 150;
+  const innerRadius = isSmallScreen ? 40 : 60;
 
   return (
     <div
@@ -83,22 +83,15 @@ export default function RepartitionPie({ weights }: { weights: Weights[] }) {
           {
             outerRadius: outerRadius,
             innerRadius: innerRadius,
-            paddingAngle: 2,
-            cornerRadius: 2,
+            paddingAngle: 0.5,
+            cornerRadius: 3,
             data,
             valueFormatter: (value) => `${value.value.toFixed(1)}%`,
+            arcLabel: (value) => `${value.label}`,
+            arcLabelMinAngle: 20,
           },
         ]}
-        sx={{
-          "& .MuiXChartsRoot": {
-            color: theme.palette.text.primary,
-          },
-          "& .MuiXChartsLegend-root": {
-            color: theme.palette.text.primary,
-          },
-        }}
-        title="Répartition"
-        hideLegend
+        // hideLegend
       >
         <PieCenterLabel>🔥</PieCenterLabel>
       </PieChart>

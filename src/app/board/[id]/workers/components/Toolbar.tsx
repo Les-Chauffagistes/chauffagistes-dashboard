@@ -20,6 +20,7 @@ export function Toolbar({ options }: ToolbarProps) {
       </button>
 
       <div className={`toolbar-panel ${open ? "open" : ""}`}>
+        <p>Hashrate: </p>
         {options.map((opt) => (
           <label key={opt.id} className="toolbar-option">
             <input

@@ -67,7 +67,7 @@ export function MainGrid({
                     workerName={params.data.workername.split(".")[1]}
                 />
             ),
-            minWidth: 100,
+            minWidth: 130,
             floatingFilter: true
         }]
         if (isHashrate1mVisible) cols.push(

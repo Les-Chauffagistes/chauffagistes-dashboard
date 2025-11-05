@@ -15,7 +15,7 @@ import { useMediaQuery } from "@mui/material";
 import "./styles.css";
 import UnitConverter from "../../../../../lib/UnitConverter";
 import { CleanWorkerHashrate } from "../../../../../models/CleanWorkerHashrate";
-import StatsWidgetBar from "../welcome/components/StatsWidgetBar";
+import StatsWidgetBar from "../../components/StatsWidgetBar";
 import { Computer, User } from "lucide-react";
 
 const COMMUNITY_POOL_ADDRESS = "bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae";
@@ -203,18 +203,22 @@ export default function Home() {
                 display: "flex",
                 flexDirection: "column"
             }} id="page">
-                <StatsWidgetBar data={[
-                    {
-                        "title": "Personnes",
-                        "value": data.length,
-                        "icon": User
-                    },
-                    {
-                        "title": "Machines",
-                        "value": userStats.globalStats.workers,
-                        "icon": Computer
-                    }
-                ]} />
+                <div style={{
+                    margin: "20px 10px"
+                }}>
+                    <StatsWidgetBar data={[
+                        {
+                            "title": "Personnes",
+                            "value": data.length,
+                            "icon": User
+                        },
+                        {
+                            "title": "Machines",
+                            "value": userStats.globalStats.workers,
+                            "icon": Computer
+                        }
+                    ]} />
+                </div>
                 <Toolbar options={options} />
                 <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
                     <div style={{ display: "flex", flex: 3 }}>
