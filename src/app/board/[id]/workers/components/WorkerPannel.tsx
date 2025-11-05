@@ -6,7 +6,7 @@ import { useWorkerStats } from "@/app/hooks/useWorkerStats";
 
 
 export default function WorkerPannel({ userAddress, worker }: { userAddress: string, worker: Worker | null }) {
-    const { stats, isLoading } = useWorkerStats(userAddress, ExtractWorkername.fromPool(worker?.workername ?? ""));
+    const { stats } = useWorkerStats(userAddress, ExtractWorkername.fromPool(worker?.workername ?? ""));
     if (!worker) {
         return (
             <div style={{
