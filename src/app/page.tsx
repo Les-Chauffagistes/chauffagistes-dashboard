@@ -9,14 +9,17 @@ export default function Home() {
       alignItems: "center",
       justifyContent: "center",
       gap: "1rem",
-      height: "100%"
+      height: "100dvh",
+      padding: "2rem",
+      backgroundColor: "var(--background)",
     }}>
       <h1 style={{
         marginBottom: "2rem",
+        fontWeight: 800,
       }}>Minage mutualisé des Chauffagistes</h1>
       <p style={{
         marginBottom: "5rem"
-      }}>Vous êtes sur la page d&apos;accueil de la pool communautaire. Cette section est dédiée aux utilisateurs qui enregistrent leurs mineurs dans la pool mutualisée.</p>
+      }}>Vous êtes sur la page d&apos;accueil du dashboard de statistiques des Chauffagistes. Consultez les statistiques de votre user et de tous les workers connectés.</p>
       <Link href="board/workers" style={{
         marginBottom: "3rem"
       }}>

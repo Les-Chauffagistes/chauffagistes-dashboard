@@ -17,6 +17,6 @@ a div {
 }
 
 a div.active {
-    background-color: var(--orange);
+    font-weight: 900;
 }
 
