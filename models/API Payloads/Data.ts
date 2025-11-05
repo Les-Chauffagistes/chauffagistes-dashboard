@@ -5,7 +5,7 @@ import { BestRecord } from "../BestRecord"
 import { Node } from "../Node"
 
 // Used in /api/data
-export interface Data {
+export interface PoolInstantStats {
     backup_pool: boolean
     pool: Pool
     users: Record<string, User>

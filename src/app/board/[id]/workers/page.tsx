@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Stats } from "@/../models/API Payloads/Stats";
+import { UserInstantStats } from "@/../models/API Payloads/Stats";
 import { usePathname } from "next/navigation";
-import { getBtcBlockReward, getBtcPrice, getPoolWeight, getWorkerStats } from "@/app/api";
+import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
 import { MainGrid } from "./components/Table";
 import { Toolbar } from "./components/Toolbar"
 import { Weights } from "../../../../../models/API Payloads/Weights";
@@ -13,9 +13,10 @@ import WorkerPannel from "./components/WorkerPannel";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import "./styles.css";
-import { ColDef } from "ag-grid-community";
 import UnitConverter from "../../../../../lib/UnitConverter";
 import { CleanWorkerHashrate } from "../../../../../models/CleanWorkerHashrate";
+import StatsWidgetBar from "../welcome/components/StatsWidgetBar";
+import { Computer, User } from "lucide-react";
 
 const COMMUNITY_POOL_ADDRESS = "bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae";
 
@@ -24,7 +25,7 @@ const COMMUNITY_POOL_ADDRESS = "bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae";
 
 
 export default function Home() {
-    const [workers, setWorkers] = useState<Stats | null>(null); // table
+    const [userStats, setUserStats] = useState<UserInstantStats | null>(null); // table
     const [weights, setWeights] = useState<Weights[]>([]);
     const [hashrate1m, setHashrate1m] = useState<boolean>(true);
     const [hashrate5m, setHashrate5m] = useState<boolean>(true);
@@ -65,8 +66,8 @@ export default function Home() {
             setHashrate7d(true);
         }
         // Fetch des stats instantannées
-        getWorkerStats(userAddress).then((result) => {
-            setWorkers(result);
+        getPoolStats(userAddress).then((result) => {
+            setUserStats(result);
         });
         // Fetch des poids dans la bdd du History Server
         getPoolWeight(userAddress).then((result) => {
@@ -87,19 +88,18 @@ export default function Home() {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
-    if (!workers || !weights.length) {
+    if (!userStats || !weights.length) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
-    const payload = { ...workers.workers } as (Worker & { weight: number })[];
+    const payload = { ...userStats.workers } as (Worker & { weight: number })[];
 
-    Object.entries(payload).forEach(([_, worker]) => {
+    for (const [, worker] of Object.entries(payload)) {
         const workerName = ExtractWorkername.fromPool(worker.workername);
         worker.weight = Number.parseFloat(weights.find(w => w.worker_id === workerName)?.avg_weight || "0");
-    })
+    }
 
     function persistActiveColumns() {
-        console.log(activeColumnsRef.current);
         localStorage.setItem("activeColumns", JSON.stringify(activeColumnsRef.current));
     }
 
@@ -172,7 +172,7 @@ export default function Home() {
     ];
 
     function normalizeHashrate(workers: (Worker & { weight: number })[]): CleanWorkerHashrate[] {
-        return Object.entries(workers).map(([_, worker]) => {
+        return Object.entries(workers).map(([, worker]) => {
             const base: CleanWorkerHashrate = {
                 workername: worker.workername,
                 lastshare: worker.lastshare,
@@ -187,7 +187,6 @@ export default function Home() {
                 weight: worker.weight
             }
             if (isCommunityPool) {
-                console.log(bitcoinBlockReward, base.weight)
                 base.rewardBtc = bitcoinBlockReward! * (base.weight / 100);
             }
             return base
@@ -204,6 +203,18 @@ export default function Home() {
                 display: "flex",
                 flexDirection: "column"
             }} id="page">
+                <StatsWidgetBar data={[
+                    {
+                        "title": "Personnes",
+                        "value": data.length,
+                        "icon": User
+                    },
+                    {
+                        "title": "Machines",
+                        "value": userStats.globalStats.workers,
+                        "icon": Computer
+                    }
+                ]} />
                 <Toolbar options={options} />
                 <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
                     <div style={{ display: "flex", flex: 3 }}>

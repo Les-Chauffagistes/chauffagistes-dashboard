@@ -1,9 +1,9 @@
-import { Stats } from "../../models/API Payloads/Stats";
+import { UserInstantStats } from "../../models/API Payloads/Stats";
 import { PoolHistoryRecord } from "../../models/API Payloads/PoolHistoryRecord";
 import { WorkerHistoryRecord } from "../../models/API Payloads/WorkerHistoryRecord";
 import { BitcoinPrice } from "../../models/API Payloads/BitcoinPrice";
 
-export async function getWorkerStats(address: string): Promise<Stats> {
+export async function getPoolStats(address: string): Promise<UserInstantStats> {
     return await fetch(`/api/stats/${address}`).then((res) => res.json());
 }
 
