@@ -1,11 +1,12 @@
 "use client";
 
-import * as React from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
-import { PoolHistoryRecord } from "../../../../../../models/API Payloads/PoolHistoryRecord";
-import UnitConverter from "../../../../../../lib/UnitConverter";
 import { AxisValueFormatterContext } from "@mui/x-charts";
 import Typography from '@mui/material/Typography';
+
+import { PoolHistoryRecord } from "../../../../../../models/API Payloads/PoolHistoryRecord";
+import UnitConverter from "../../../../../../lib/UnitConverter";
+
 
 export default function HashrateChart({
   data,
@@ -23,12 +24,7 @@ export default function HashrateChart({
   return (
 
     <div style={{
-      height: 400,
-      display: "flex",
-      flexDirection: "column",
-      // flex:1,
-      // justifyContent: "start",
-      // alignItems: "center",
+      height: 370,
     }}>
       <Typography style={{ textAlign: "center" }}>Hashrate</Typography>
       <LineChart
@@ -70,7 +66,6 @@ export default function HashrateChart({
         series={[
           {
             dataKey: "avg_hashrate1h",
-            // series label can itself be a function that receives the location
             label: "Hashrate (1h)",
             showMark: false,
             valueFormatter: (v: number | null) => {
@@ -88,12 +83,12 @@ export default function HashrateChart({
             },
           },
         ]}
-        slotProps={{
-          legend: { position: { vertical: "top", horizontal: "center" } },
-          tooltip: {
-            trigger: "axis",
-          }
-        }}
+        // slotProps={{
+        //   legend: { position: { vertical: "top", horizontal: "center" } },
+        //   tooltip: {
+        //     trigger: "axis",
+        //   }
+        // }}
       />
     </div>
   );

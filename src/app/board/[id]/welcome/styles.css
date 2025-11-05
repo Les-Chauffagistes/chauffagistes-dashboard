@@ -1,0 +1,7 @@
+.graph {
+    background-color: var(--card-background-color);
+    border-radius: 10px;
+    border: 1px solid var(--card-outline-color);
+    padding: 5px 10px;
+    width: 100%;
+}
