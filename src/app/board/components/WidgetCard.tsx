@@ -24,7 +24,7 @@ export default function WidgetCard({ title, value, Icon }: Readonly<{ title: str
                 alignItems: "center",
                 gap: 5
             }}>
-                <Icon size={16} />
+                <Icon size={16} color="var(--secondary-white-text-color)" />
                 <h5 style={{
                     textTransform: "uppercase",
                     color: "var(--secondary-white-text-color)",
@@ -33,7 +33,7 @@ export default function WidgetCard({ title, value, Icon }: Readonly<{ title: str
                 }}>{title}</h5>
             </div>
             <h2 style={{
-                marginBottom: 1,
+                margin: "5px 0 0",
                 fontWeight: 800,
                 fontSize: "1.6rem"
             }} className={jua.className}>{value}</h2>
