@@ -35,6 +35,7 @@ export async function POST(req: Request) {
     return new Response(JSON.stringify({ verified: true }), { status: 200 });
   } catch (e) {
     await pool.query("ROLLBACK");
-    return new Response(JSON.stringify({ error: e?.message || String(e) }), { status: 500 });
+    const message = e instanceof Error ? e.message : String(e);
+    return new Response(JSON.stringify({ error: message }), { status: 500 });
   }
 }
