@@ -41,7 +41,7 @@ export default function LoginPage() {
             backgroundColor: "white",
             padding: 30
         }}>
-            <QRCode value={lnurl} />
+            <QRCode value={"lightning:"+lnurl} />
         </div>
     );
 }
