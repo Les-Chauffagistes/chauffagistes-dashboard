@@ -20,7 +20,8 @@ export async function POST(req: Request) {
         
         return NextResponse.json({ userId, challenge });
     } catch (error) {
-        console.error("error /create", error.message);
+        const message = error instanceof Error ? error.message : String(error);
+        console.error("error /create", message);
         return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
     }
 }

@@ -1,7 +1,7 @@
 // src/app/api/auth/lnurl/route.ts
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
-import { bech32, bech32m } from "@scure/base";
+import { bech32m } from "@scure/base";
 import { pool } from "../../../../../lib/Postrgre";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL; // https://tonsite.com
