@@ -51,7 +51,7 @@ export default function HashreateLine({ history }: { history: WorkerHistoryRecor
             ]}
             series={[
                 {
-                    data: history.map((item) => item.avg_hashrate1h),
+                    data: history.map((item) => Number.parseInt(item.avg_hashrate1h)),
                     showMark: false,
                     yAxisId: 'hashrateAxis',
                     label: "Hashrate (1h)",
@@ -61,7 +61,7 @@ export default function HashreateLine({ history }: { history: WorkerHistoryRecor
                     },
                 },
                 {
-                    data: history.map((item) => item.avg_hashrate1d),
+                    data: history.map((item) => Number.parseInt(item.avg_hashrate1d)),
                     showMark: false,
                     yAxisId: 'hashrateAxis',
                     label: "Hashrate (1d)",
@@ -71,7 +71,7 @@ export default function HashreateLine({ history }: { history: WorkerHistoryRecor
                     },
                 },
                 {
-                    data: history.map((item) => item.avg_hashrate7d),
+                    data: history.map((item) => Number.parseInt(item.avg_hashrate7d)),
                     showMark: false,
                     yAxisId: 'hashrateAxis',
                     label: "Hashrate (7d)",

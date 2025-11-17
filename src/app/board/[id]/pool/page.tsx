@@ -21,6 +21,10 @@ import StatsWidgetBar from "../../components/StatsWidgetBar";
 import UnitConverter from "../../../../../lib/UnitConverter";
 
 import "./styles.css";
+import CumulatedWorkersLine from "./components/CumulatedWorkersHashrate";
+import StackedStatSelecteor, { OptionsType } from "./components/StackedStatSelector";
+import { AxisValueFormatterContext, YAxis } from "@mui/x-charts";
+import * as React from "react";
 
 
 export default function Welcome() {
@@ -34,6 +38,7 @@ export default function Welcome() {
     const [poolStats, setPoolStats] = useState<UserInstantStats | null>(null);
     const [weights, setWeights] = useState<Weights[]>([]);
     const [workersHistory, setWorkersHistory] = useState<AllWorkersHistoryRecord[] | null>(null);
+    const [stackedStatName, setStackedStatName] = useState<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">>("avg_hashrate1h");
 
     useEffect(() => {
         getPoolHistory(userId).then((data) => {
@@ -54,6 +59,43 @@ export default function Welcome() {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
+    const statsNames: OptionsType<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">> = [
+        {
+            "displayName": "Hashrate",
+            "optionName": "avg_hashrate1h"
+        },
+        {
+            "displayName": "Poids",
+            "optionName": "avg_weight"
+        }
+    ]
+
+    function handleStackedStatChange(statName: keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">) {
+        setStackedStatName(statName);
+    }
+    let yAxis: YAxis[]
+    if (stackedStatName == "avg_hashrate1h") {
+        yAxis = [{
+            width: 75,
+            label: "Hashrate (H/s)",
+            valueFormatter: (value: number, context: AxisValueFormatterContext) => {
+                if (context.location === "tick" && context.defaultTickLabel === "") return "";
+                return UnitConverter.fromNumberToString(value, 3);
+            }
+        }]
+
+    } else {
+        yAxis = [{
+            width: 75,
+            label: "Poids (%)",
+            max: 100,
+            valueFormatter: (value: number, context: AxisValueFormatterContext) => {
+                if (context.location === "tick" && context.defaultTickLabel === "") return "";
+                return value.toFixed(0) + "%";
+            }
+        }]
+
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -116,10 +158,17 @@ export default function Welcome() {
                         <HashrateChart data={poolStatsHistory} />
                     </div>
                 </div>
-                <div style={{
-                    height: 400
+                <div className="graph" style={{
+                    margin: "0 10px 10px",
+                    width: "calc(100% - 20px)", // -marges
                 }}>
-                    {/* <CumulatedWorkersHashrate workersHistory={workersHistory} /> */}
+                    <div style={{
+                        margin: '10px auto',
+                    }}>
+                        <StackedStatSelecteor options={statsNames} handler={handleStackedStatChange} />
+                    </div>
+                    {/* TODO Permettre de changer l'axe y et les value formatters */}
+                    <CumulatedWorkersLine workersHistory={workersHistory} statName={stackedStatName} yAxis={yAxis} />
                 </div>
             </div>
         </ThemeProvider>

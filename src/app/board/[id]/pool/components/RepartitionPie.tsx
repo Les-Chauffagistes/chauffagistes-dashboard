@@ -91,7 +91,7 @@ export default function RepartitionPie({ weights }: { weights: Weights[] }) {
             arcLabelMinAngle: 20,
           },
         ]}
-        // hideLegend
+        hideLegend
       >
         <PieCenterLabel>🔥</PieCenterLabel>
       </PieChart>

@@ -1,0 +1,74 @@
+"use client";
+
+import { useState } from "react";
+import {
+  startRegistration,
+  startAuthentication,
+} from "@simplewebauthn/browser";
+
+export default function Page() {
+  const [username, setUsername] = useState("");
+  const [userId, setUserId] = useState("null");
+
+  async function createUser() {
+    const r = await fetch("/api/auth/create-user", {
+      method: "POST",
+      body: JSON.stringify({ username }),
+    });
+    const out = await r.json();
+    setUserId(out.userId);
+  }
+
+  async function registerKey() {
+    const r = await fetch(
+      `/api/auth/register/options?userId=${encodeURIComponent(userId)}`,
+    );
+    const options = await r.json();
+    console.log(options);
+
+    const att = await startRegistration({ optionsJSON: options });
+
+    await fetch("/api/auth/register/verify", {
+      method: "POST",
+      body: JSON.stringify({
+        userId,
+        response: att,
+      }),
+    });
+  }
+
+  async function login() {
+    const r = await fetch(
+      `/api/auth/login/options?username=${encodeURIComponent(username)}`,
+    );
+    const options = await r.json();
+
+    const auth = await startAuthentication({ optionsJSON: options });
+
+    await fetch("/api/auth/login/verify", {
+      method: "POST",
+      body: JSON.stringify({
+        username,
+        response: auth,
+      }),
+    });
+  }
+
+  return (
+    <div>
+      <input
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
+        placeholder="username"
+      />
+
+      <button onClick={createUser}>create user</button>
+
+      <button onClick={registerKey} disabled={!userId}>
+        register key
+      </button>
+
+      <button onClick={login}>login</button>
+    </div>
+  );
+}
