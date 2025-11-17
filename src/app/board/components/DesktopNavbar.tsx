@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import "./desktopNavbar.css"
 
 
 export function DesktopNavbar() {
@@ -20,9 +21,9 @@ export function DesktopNavbar() {
                     Workers
                 </div>
             </Link>
-            <Link href="welcome">
-                <div  className={path.endsWith('welcome') ? "active" : ""}>
-                    Accueil
+            <Link href="pool">
+                <div  className={path.endsWith('pool') ? "active" : ""}>
+                    Pool
                 </div>
             </Link>
             <Link href="my">
