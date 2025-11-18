@@ -16,7 +16,7 @@ export default function WorkerPannel({ userAddress, worker }: { userAddress: str
                 <h2 style={{ marginTop: "1rem", marginLeft: "1rem" }}>
                     Sélectionnez un mineur
                 </h2>
-                <HashreateLine history={[]} />
+                <HashreateLine history={[]} showHashrate1h />
             </div>
         )
     }
@@ -29,7 +29,7 @@ export default function WorkerPannel({ userAddress, worker }: { userAddress: str
             <h2 style={{ marginTop: "1rem", marginLeft: "1rem" }}>
                 {ExtractWorkername.fromPool(worker.workername)}
             </h2>
-            <HashreateLine history={stats} />
+            <HashreateLine history={stats} showHashrate1h />
         </div>
     )
 }

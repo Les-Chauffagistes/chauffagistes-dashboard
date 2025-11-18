@@ -1,9 +1,56 @@
-import { AxisValueFormatterContext, LineChart } from "@mui/x-charts";
+import { AxisValueFormatterContext, LineChart, LineSeries } from "@mui/x-charts";
 import { WorkerHistoryRecord } from "../../../../../../models/API Payloads/WorkerHistoryRecord";
 import UnitConverter from "../../../../../../lib/UnitConverter";
 import { frFRLocalText } from '@mui/x-charts/locales';
 
-export default function HashreateLine({ history }: { history: WorkerHistoryRecord[] }) {
+export default function HashreateLine({ history, showHashrate1h }: { history: WorkerHistoryRecord[], showHashrate1h: boolean }) {
+    const series: LineSeries[] = []
+    if (showHashrate1h) {
+        series.push(
+            {
+                data: history.map((item) => Number.parseInt(item.avg_hashrate1h)),
+                showMark: false,
+                yAxisId: 'hashrateAxis',
+                label: "Hashrate (1h)",
+                valueFormatter: (v: number | null) => {
+                    if (!v) return "0";
+                    return UnitConverter.fromNumberToString(v);
+                },
+            }
+        )
+    }
+    series.push(
+        {
+            data: history.map((item) => Number.parseInt(item.avg_hashrate1d)),
+            showMark: false,
+            yAxisId: 'hashrateAxis',
+            label: "Hashrate (1d)",
+            valueFormatter: (v: number | null) => {
+                if (!v) return "0";
+                return UnitConverter.fromNumberToString(v);
+            },
+        },
+        {
+            data: history.map((item) => Number.parseInt(item.avg_hashrate7d)),
+            showMark: false,
+            yAxisId: 'hashrateAxis',
+            label: "Hashrate (7d)",
+            valueFormatter: (v: number | null) => {
+                if (!v) return "0";
+                return UnitConverter.fromNumberToString(v);
+            },
+        },
+        {
+            data: history.map((item) => Number.parseFloat(item.avg_weight)),
+            showMark: false,
+            yAxisId: 'weightAxis',
+            label: "Poids",
+            valueFormatter: (v: number | null) => {
+                if (!v) return "0%";
+                return v.toFixed(1) + "%";
+            },
+        }
+    );
     return (
         <LineChart
             localeText={frFRLocalText}
@@ -49,48 +96,7 @@ export default function HashreateLine({ history }: { history: WorkerHistoryRecor
                             }),
                 }
             ]}
-            series={[
-                {
-                    data: history.map((item) => Number.parseInt(item.avg_hashrate1h)),
-                    showMark: false,
-                    yAxisId: 'hashrateAxis',
-                    label: "Hashrate (1h)",
-                    valueFormatter: (v: number | null) => {
-                        if (!v) return "0";
-                        return UnitConverter.fromNumberToString(v);
-                    },
-                },
-                {
-                    data: history.map((item) => Number.parseInt(item.avg_hashrate1d)),
-                    showMark: false,
-                    yAxisId: 'hashrateAxis',
-                    label: "Hashrate (1d)",
-                    valueFormatter: (v: number | null) => {
-                        if (!v) return "0";
-                        return UnitConverter.fromNumberToString(v);
-                    },
-                },
-                {
-                    data: history.map((item) => Number.parseInt(item.avg_hashrate7d)),
-                    showMark: false,
-                    yAxisId: 'hashrateAxis',
-                    label: "Hashrate (7d)",
-                    valueFormatter: (v: number | null) => {
-                        if (!v) return "0";
-                        return UnitConverter.fromNumberToString(v);
-                    },
-                },
-                {
-                    data: history.map((item) => Number.parseFloat(item.avg_weight)),
-                    showMark: false,
-                    yAxisId: 'weightAxis',
-                    label: "Poids",
-                    valueFormatter: (v: number | null) => {
-                        if (!v) return "0%";
-                        return v.toFixed(1) + "%";
-                    },
-                },
-            ]}
+            series={series}
         />
     )
 }

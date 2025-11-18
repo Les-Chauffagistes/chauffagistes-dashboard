@@ -8,7 +8,6 @@ import { useMediaQuery } from "@mui/material";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { getAllWorkersHistory, getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
 
-import RepartitionPie from "./components/RepartitionPie";
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
 
@@ -25,6 +24,8 @@ import CumulatedWorkersLine from "./components/CumulatedWorkersHashrate";
 import StackedStatSelecteor, { OptionsType } from "./components/StackedStatSelector";
 import { AxisValueFormatterContext, YAxis } from "@mui/x-charts";
 import * as React from "react";
+import ResponsivePieContainer from "./components/ResponsivePieContainer";
+
 
 
 export default function Welcome() {
@@ -39,6 +40,9 @@ export default function Welcome() {
     const [weights, setWeights] = useState<Weights[]>([]);
     const [workersHistory, setWorkersHistory] = useState<AllWorkersHistoryRecord[] | null>(null);
     const [stackedStatName, setStackedStatName] = useState<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">>("avg_hashrate1h");
+
+    const isLargeScreen = useMediaQuery("(min-width: 800px)");
+
 
     useEffect(() => {
         getPoolHistory(userId).then((data) => {
@@ -97,6 +101,7 @@ export default function Welcome() {
 
     }
 
+
     return (
         <ThemeProvider theme={theme}>
             <div style={{
@@ -113,6 +118,8 @@ export default function Welcome() {
                         display: "flex",
                         alignItems: "end",
                         gap: 10,
+                        maxWidth: "100%",
+                        flexWrap: "wrap",
                     }}>
                         <CombinedWidgetCard data={{
                             title: "Hashrate",
@@ -150,26 +157,34 @@ export default function Welcome() {
                         ]} />
                     </div> : null
                 }
-                <div style={{ display: "flex", marginTop: 10, height: 400, gap: 10, margin: "0 10px" }}>
-                    <div className="graph" style={{ display: "flex", justifyContent: "start", width: "fit-content" }}>
-                        <RepartitionPie weights={weights} />
+                {isLargeScreen ?
+                    <div style={{ display: "flex", marginTop: 10, height: 400, gap: 10, margin: "0 10px" }}>
+                        <div className="graph" style={{ width: "100%", margin: "0 10px", flex: 1 }}>
+                            <ResponsivePieContainer weights={weights} />
+                        </div>
+                        <div className="graph" style={{ width: "100%", flex: 3 }}>
+                            <HashrateChart data={poolStatsHistory} />
+                        </div>
                     </div>
-                    <div className="graph" style={{ width: "100%" }}>
-                        <HashrateChart data={poolStatsHistory} />
+                    :
+                    <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px", flex: 1 }}>
+                        <ResponsivePieContainer weights={weights} />
                     </div>
-                </div>
-                <div className="graph" style={{
-                    margin: "0 10px 10px",
-                    width: "calc(100% - 20px)", // -marges
-                }}>
-                    <div style={{
-                        margin: '10px auto',
+                }
+                {isLargeScreen ? 
+                    <div className="graph" style={{
+                        margin: "0 10px 10px",
+                        width: "calc(100% - 20px)", // -marges
                     }}>
-                        <StackedStatSelecteor options={statsNames} handler={handleStackedStatChange} />
+                        <div style={{
+                            margin: '10px auto',
+                        }}>
+                            <StackedStatSelecteor options={statsNames} handler={handleStackedStatChange} />
+                        </div>
+                        <CumulatedWorkersLine workersHistory={workersHistory} statName={stackedStatName} yAxis={yAxis} />
                     </div>
-                    {/* TODO Permettre de changer l'axe y et les value formatters */}
-                    <CumulatedWorkersLine workersHistory={workersHistory} statName={stackedStatName} yAxis={yAxis} />
-                </div>
+                : null
+                }
             </div>
         </ThemeProvider>
     )

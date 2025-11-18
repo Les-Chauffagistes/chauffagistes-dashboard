@@ -10,11 +10,13 @@ const heavyRoundedFont = Jua({
 
 export default function CombinedWidgetCard({ data }: { data: { title: string, values: { label: string, value: number | string }[], icon: LucideIcon } }) {
     return (
-        <div>
+        <>
             <div style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 5
+                gap: 5,
+                width: "100%",
+                marginBottom: -5,
             }}>
                 <data.icon size={16} color="var(--secondary-white-text-color)" />
                 <h5 style={{
@@ -24,18 +26,19 @@ export default function CombinedWidgetCard({ data }: { data: { title: string, va
                     margin: "5px 0"
                 }}>{data.title}</h5>
             </div>
-            <div style={{
-                border: "1px solid var(--card-outline-color)",
-                backgroundColor: "var(--card-background-color)",
-                borderRadius: "10px",
-                // padding: "5px 10px",
-                // width: 150,
+            <div id="hashrates-bar" style={{
                 fontSmooth: "antialiased",
                 WebkitFontSmoothing: "antialiased",
-                display: "flex",
-                gap: 5,
+                border: "1px solid var(--card-outline-color)",
+                borderRadius: "10px",
+                backgroundColor: "var(--card-outline-color)",
+                gap: 1,
                 overflow: "hidden",
-                width: "fit-content"
+                width: "fit-content",
+                maxWidth: "100%",
+                display: "flex",
+                inlineSize: "fit-content",
+                flexWrap: "wrap",
             }}>
                 {data.values.map((item) => {
                     return (
@@ -49,7 +52,8 @@ export default function CombinedWidgetCard({ data }: { data: { title: string, va
                                 flexDirection: "column",
                                 padding: 10,
                                 flex: 1,
-                                minWidth: 0,
+                                minWidth: 140,
+                                backgroundColor: "var(--background)",
                             }}
                         >
                             <h4
@@ -82,6 +86,6 @@ export default function CombinedWidgetCard({ data }: { data: { title: string, va
                     );
                 })}
             </div>
-        </div >
+        </ >
     )
 }

@@ -178,6 +178,7 @@ export function MainGrid({
                 field: "bestshare",
                 colId: "bestshare",
                 filter: false,
+                minWidth: 110,
                 valueFormatter: (params: ValueFormatterParams) => {
                     if (!params.value) return noData;
                     return UnitConverter.fromNumberToString(params.value);

@@ -32,3 +32,7 @@ export async function getBtcBlockReward(): Promise<number> {
 export async function getAllWorkersHistory(userAddress: string): Promise<AllWorkersHistoryRecord[]> {
     return await fetch(`/api/history/${userAddress}`).then((res) => res.json());
 }
+
+export async function addresssExists(address: string): Promise<boolean> {
+    return await fetch(`/api/${address}/exists`).then((res) => res.json());
+}

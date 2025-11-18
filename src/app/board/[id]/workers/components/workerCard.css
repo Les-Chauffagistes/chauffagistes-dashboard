@@ -1,0 +1,11 @@
+.hashrate {
+    border: 1.5px solid var(--orange)
+}
+
+.shares {
+    border: 1.5px solid #379b41
+}
+
+.weight {
+    border: 1.5px solid #4844ba
+}

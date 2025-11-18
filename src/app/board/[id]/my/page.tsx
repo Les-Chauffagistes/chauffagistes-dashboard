@@ -1,10 +1,30 @@
 // src/app/login/page.tsx
 "use client";
 
+import { QrCodeIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
 
 export default function LoginPage() {
+    return (
+        <div style={{
+            display: "flex",
+            height: "100%",
+        }}>
+            <div style={{
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "100%",
+                gap: 20,
+            }}>
+                <p style={{ textAlign: "center" }}>Authentification via Lightning bientôt disponible</p>
+                <QrCodeIcon color={"var(--orange)"} size={32} />
+            </div>
+        </div>
+    )
+
     const [k1, setK1] = useState<string | null>(null);
     const [lnurl, setLnurl] = useState<string | null>(null);
     const [authenticated, setAuthenticated] = useState(false);

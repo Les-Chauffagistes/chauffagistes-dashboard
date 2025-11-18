@@ -3,8 +3,7 @@
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 
-import { useTheme, styled } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import { styled } from "@mui/material/styles";
 import Typography from '@mui/material/Typography';
 
 import { Weights } from "../../../../../../models/API Payloads/Weights";
@@ -51,18 +50,18 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function RepartitionPie({ weights }: { weights: Weights[] }) {
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-
+export default function RepartitionPie({
+  weights,
+  size,
+}: {
+  weights: Weights[];
+  size: number;
+}) {
   if (!weights || weights.length === 0) return <div>No data</div>;
 
   const data = getPieData(weights, 0.1);
-
-  // Adjust sizes based on screen size
-  const size = isSmallScreen ? 250 : 400;
-  const outerRadius = isSmallScreen ? 70 : 150;
-  const innerRadius = isSmallScreen ? 40 : 60;
+  const outerRadius = size * 0.35;
+  const innerRadius = size * 0.2;
 
   return (
     <div
@@ -76,18 +75,19 @@ export default function RepartitionPie({ weights }: { weights: Weights[] }) {
       }}
     >
       <Typography>Répartition</Typography>
+
       <PieChart
         width={size}
         height={size}
         series={[
           {
-            outerRadius: outerRadius,
-            innerRadius: innerRadius,
+            outerRadius,
+            innerRadius,
             paddingAngle: 0.5,
             cornerRadius: 3,
             data,
-            valueFormatter: (value) => `${value.value.toFixed(1)}%`,
-            arcLabel: (value) => `${value.label}`,
+            valueFormatter: (v) => `${v.value.toFixed(1)}%`,
+            arcLabel: (v) => `${v.label}`,
             arcLabelMinAngle: 20,
           },
         ]}

@@ -1,0 +1,12 @@
+.weight-cell,
+.share-cell,
+.hashrate-cell {
+    border-left: 1px solid var(--card-outline-color);
+    padding: 2px 7px;
+}
+
+.weight-cell:first-of-type,
+.share-cell:first-of-type,
+.hashrate-cell:first-of-type {
+    border-left: none;
+}
