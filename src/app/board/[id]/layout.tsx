@@ -1,4 +1,5 @@
 import { DesktopNavbar } from "../components/DesktopNavbar";
+import MobileNavbar from "../components/MobileNavbar";
 import "./styles.css"
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode;}>) {
@@ -6,7 +7,7 @@ export default function Layout({ children }: Readonly<{children: React.ReactNode
         <div style={{display: "flex", flexDirection: "column", height: "100dvh", backgroundColor: "var(--background)"}}>
             <DesktopNavbar />
             {children}
-            
+            <MobileNavbar />
         </div>
     )
 }

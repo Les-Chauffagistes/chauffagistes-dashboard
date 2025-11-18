@@ -1,28 +1,31 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { UserInstantStats } from "@/../models/API Payloads/Stats";
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
-import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
-import { MainGrid } from "./components/Table";
-import { Toolbar } from "./components/Toolbar"
-import { Weights } from "../../../../../models/API Payloads/Weights";
-import { Worker } from "../../../../../models/Worker";
-import ExtractWorkername from "../../../../../lib/ExtractWorkername";
-import WorkerPannel from "./components/WorkerPannel";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import "./styles.css";
-import UnitConverter from "../../../../../lib/UnitConverter";
-import { CleanWorkerHashrate } from "../../../../../models/CleanWorkerHashrate";
-import StatsWidgetBar from "../../components/StatsWidgetBar";
 import { Computer, User } from "lucide-react";
 
+import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
+
+import StatsWidgetBar from "../../components/StatsWidgetBar";
+import { MainGrid } from "./components/Table";
+import { Toolbar } from "./components/Toolbar"
+import WorkerPannel from "./components/WorkerPannel";
+import WorkerList from "./components/WorkerList";
+
+
+import UnitConverter from "@/../lib/UnitConverter";
+import ExtractWorkername from "@/../lib/ExtractWorkername";
+
+import { UserInstantStats } from "@/../models/API Payloads/Stats";
+import { CleanWorkerHashrate } from "@/../models/CleanWorkerHashrate";
+import { Weights } from "@/../models/API Payloads/Weights";
+import { Worker } from "@/../models/Worker";
+
+import "./styles.css";
+
 const COMMUNITY_POOL_ADDRESS = "bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae";
-
-
-
-
 
 export default function Home() {
     const [userStats, setUserStats] = useState<UserInstantStats | null>(null); // table
@@ -35,6 +38,7 @@ export default function Home() {
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
+    const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
     const pathname = usePathname();
     const userAddress = pathname?.split("/")[2];
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
@@ -83,6 +87,7 @@ export default function Home() {
         })
     }, [userAddress]);
 
+    const isLargeScreen = useMediaQuery("(min-width: 800px)");
 
     if (isCommunityPool && (bitcoinPrice === null && bitcoinBlockReward === null)) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
@@ -163,6 +168,15 @@ export default function Home() {
         persistActiveColumns();
     }
 
+    function orderHandler(e: ChangeEvent<HTMLSelectElement>) {
+        const value = e.target.value;
+        if (data.length > 0 && value in data[0]) {
+            setOrderBy(value as keyof CleanWorkerHashrate);
+        } else {
+            console.warn(`Invalid order value: ${value}`);
+        }
+    }
+
     const options = [
         { id: "1m", label: "1 m", checked: hashrate1m, onChange: (e: boolean) => hashrate1mHandler(e) },
         { id: "5m", label: "5 m", checked: hashrate5m, onChange: (e: boolean) => hashrate5mHandler(e) },
@@ -203,40 +217,92 @@ export default function Home() {
                 display: "flex",
                 flexDirection: "column"
             }} id="page">
-                <div style={{
-                    margin: "20px 10px"
-                }}>
-                    <StatsWidgetBar data={[
-                        {
-                            "title": "Personnes",
-                            "value": data.length,
-                            "icon": User
-                        },
-                        {
-                            "title": "Machines",
-                            "value": userStats.globalStats.workers,
-                            "icon": Computer
-                        }
-                    ]} />
-                </div>
-                <Toolbar options={options} />
-                <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
-                    <div style={{ display: "flex", flex: 3 }}>
-                        <MainGrid workers={data}
-                            btcPrice={bitcoinPrice}
-                            isCommunityPool={isCommunityPool}
-                            isHashrate1mVisible={hashrate1m}
-                            isHashrate5mVisible={hashrate5m}
-                            isHashrate1hrVisible={hashrate1hr}
-                            isHashrate1dVisible={hashrate1d}
-                            isHashrate7dVisible={hashrate7d}
-                            onSelectWorker={setSelectedWorker}
-                        />
+                {isLargeScreen ?
+                    <>
+                        <div style={{
+                            margin: "20px 10px"
+                        }}>
+                            <StatsWidgetBar data={[
+                                {
+                                    "title": "Personnes",
+                                    "value": data.length,
+                                    "icon": User
+                                },
+                                {
+                                    "title": "Machines",
+                                    "value": userStats.globalStats.workers,
+                                    "icon": Computer
+                                }
+                            ]} />
+                        </div>
+                        <Toolbar options={options} />
+                        <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
+                            <div style={{ display: "flex", flex: 3 }}>
+                                <MainGrid workers={data}
+                                    btcPrice={bitcoinPrice}
+                                    isCommunityPool={isCommunityPool}
+                                    isHashrate1mVisible={hashrate1m}
+                                    isHashrate5mVisible={hashrate5m}
+                                    isHashrate1hrVisible={hashrate1hr}
+                                    isHashrate1dVisible={hashrate1d}
+                                    isHashrate7dVisible={hashrate7d}
+                                    onSelectWorker={setSelectedWorker}
+                                />
+                            </div>
+                            <div style={{ display: "flex", flex: 2, backgroundColor: "var(--card-background-color)", borderRadius: 8, border: "1px solid var(--card-outline-color)" }}>
+                                <WorkerPannel worker={selectedWorker} userAddress={userAddress} />
+                            </div>
+                        </div>
+                    </> :
+                    <div style={{
+                        margin: "0 10px 10px",
+                    }}>
+                        <div style={{
+                            display: "flex",
+                            margin: "10px 0",
+                            flexWrap: "wrap",
+                        }}>
+                            <StatsWidgetBar data={[
+                                {
+                                    "title": "Personnes",
+                                    "value": data.length,
+                                    "icon": User
+                                },
+                                {
+                                    "title": "Machines",
+                                    "value": userStats.globalStats.workers,
+                                    "icon": Computer
+                                }
+                            ]} />
+                            <div style={{
+                                display: "flex",
+                                justifyContent: "right",
+                                alignItems: "end",
+                                flex: 1,
+                                marginTop: 10,
+                            }}>
+                                <select onChange={orderHandler} style={{
+                                    padding: "5px 10px",
+                                    border: "1px solid var(--card-outline-color)",
+                                    borderRadius: 10,
+                                    backgroundColor: "var(--card-background-color)",
+                                }} defaultValue={"weight"} id="order-by" name="Trier" aria-label="Trier" title="Trier" >
+                                    <optgroup label="Hashrate">
+                                        <option value="hashrate5m">5m</option>
+                                        <option value="hashrate1h">1h</option>
+                                        <option value="hashrate1d">1d</option>
+                                    </optgroup>
+                                    <optgroup label="Shares">
+                                        <option value="shares">Shares</option>
+                                        <option value="bestshare">Best share</option>
+                                    </optgroup>
+                                    <option value="weight"> Poids</option>
+                                </select>
+                            </div>
+                        </div>
+                        <WorkerList workers={data} orderBy={orderBy} userAddress={userAddress} btcPrice={bitcoinPrice} btcPerBlock={bitcoinBlockReward} isCommunityPool={isCommunityPool} />
                     </div>
-                    <div style={{ display: "flex", flex: 2, backgroundColor: "var(--card-background-color)", borderRadius: 8, border: "1px solid var(--card-outline-color)" }}>
-                        <WorkerPannel worker={selectedWorker} userAddress={userAddress} />
-                    </div>
-                </div>
+                }
             </div>
         </ThemeProvider>
     );

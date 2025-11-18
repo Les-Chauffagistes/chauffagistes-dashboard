@@ -1,0 +1,29 @@
+import { CleanWorkerHashrate } from "../../../../../../models/CleanWorkerHashrate"
+import WorkerCard from "./WorkerCard"
+import WorkerPopup from "./WorkerPopup"
+
+
+
+export default function WorkerList({ workers, orderBy, userAddress, btcPrice, btcPerBlock, isCommunityPool }: Readonly<{ workers: (CleanWorkerHashrate & { weight: number })[], orderBy: keyof (CleanWorkerHashrate & { weight: number }), userAddress: string, btcPrice: number | null, btcPerBlock: number | null, isCommunityPool: boolean }>) {
+    return (
+        <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 10
+        }}>
+            {[...workers].sort((a, b) => Number(b[orderBy]) - Number(a[orderBy])).map((worker) => {
+                return (
+                    <WorkerPopup key={worker.workername} userAddress={userAddress} worker={worker}>
+                        <button style={{
+                            backgroundColor: "transparent",
+                            border: "none",
+                            cursor: "pointer"
+                        }}>
+                            <WorkerCard worker={worker} btcPrice={btcPrice} btcPerBlock={btcPerBlock} isCommunityPool={isCommunityPool} />
+                        </button>
+                    </WorkerPopup>
+                )
+            })}
+        </div>
+    )
+}

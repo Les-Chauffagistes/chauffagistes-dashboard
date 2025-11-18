@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import ThemeBody from "./ThemeBody";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,11 +31,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`} style={{
-        backgroundColor: "#1f1f1f"
-      }}>
+      <ThemeBody className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-      </body>
+      </ThemeBody>
     </html>
   );
 }

@@ -8,26 +8,25 @@ import "./desktopNavbar.css"
 export function DesktopNavbar() {
     const path = usePathname();
     return (
-        <div style={{
+        <div id="desktop-navbar"style={{
             display: "flex",
             gap: 20,
             width: "100%",
-            fontSize: "1.2rem",
             padding: 10,
-            backgroundColor: "var(--gray)",
+            backgroundColor: "var(--desktop-navbar-background-color)",
         }}>
             <Link href="workers">
-                <div  className={path.endsWith('workers') ? "active" : ""}>
+                <div  className={path.endsWith('workers') ? "des-nav-active" : ""}>
                     Workers
                 </div>
             </Link>
             <Link href="pool">
-                <div  className={path.endsWith('pool') ? "active" : ""}>
+                <div  className={path.endsWith('pool') ? "des-nav-active" : ""}>
                     Pool
                 </div>
             </Link>
             <Link href="my">
-                <div className={path.endsWith("my") ? "active" : ""}>
+                <div className={path.endsWith("my") ? "des-nav-active" : ""}>
                     Profil
                 </div>
             </Link>

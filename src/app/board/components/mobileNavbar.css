@@ -1,0 +1,22 @@
+@media screen and (min-width: 800px) {
+    #mobile-navbar {
+        display: none !important;
+    }
+}
+
+#mobile-navbar div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+#mobile-navbar a {
+    flex: 1;
+}
+
+.mob-nav-active {
+    color: var(--mobile-navbar-active-color) !important;
+    font-weight: 900 !important;
+}

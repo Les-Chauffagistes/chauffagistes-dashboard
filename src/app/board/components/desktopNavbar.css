@@ -1,4 +1,10 @@
-.active {
-    color: var(--orange) !important;
+.des-nav-active {
+    color: var(--desktop-navbar-active-color) !important;
     font-weight: 900 !important;
+}
+
+@media screen and (max-width: 800px) {
+    #desktop-navbar {
+        display: none !important;
+    }
 }

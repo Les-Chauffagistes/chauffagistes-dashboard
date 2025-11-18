@@ -1,7 +1,0 @@
-.combined-widget-card-item {
-    border-left: 1px solid var(--card-outline-color);
-}
-
-.combined-widget-card-item:first-of-type {
-    border-left: none;
-}

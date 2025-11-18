@@ -1,15 +1,4 @@
-:root {
-    --card-background-color: #f0f0f0;
-    --card-outline-color: #434343;
 
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --card-background-color: hsl(217, 0%, 17%);
-        --card-outline-color: #4B4B4B;
-    }
-}
 
 a div {
     border-radius: 10px;
