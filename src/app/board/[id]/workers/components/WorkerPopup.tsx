@@ -53,7 +53,7 @@ export default function WorkerPopup({ children, userAddress, worker, }: { childr
                     display: "flex",
                     width: "100%",
                 }}>
-                    <HashreateLine history={stats} showHashrate1h={false} />
+                    <HashreateLine history={stats} showHashrate1h={false} showWeight />
                 </div>
             </Dialog.Content>
         </Dialog.Root>

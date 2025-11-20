@@ -9,8 +9,7 @@ export async function getPoolStats(address: string): Promise<UserInstantStats> {
 }
 
 export async function getWorkerStatsHistory(userAddress: string, workerName: string, period: "30d" | "forever"): Promise<WorkerHistoryRecord[]> {
-    const url = `/api/history/${userAddress}/worker/${workerName}/${period}`;
-    return await fetch(url).then((res) => res.json());
+    return await fetch(`/api/history/${userAddress}/worker/${workerName}/${period}`).then((res) => res.json());
 }
 
 export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRecord[]> {

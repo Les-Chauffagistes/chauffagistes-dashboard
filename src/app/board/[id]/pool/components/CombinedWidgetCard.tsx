@@ -1,5 +1,4 @@
 import { LucideIcon } from "lucide-react";
-import "./combinedWidgetCard.css";
 import { Jua } from "next/font/google";
 
 const heavyRoundedFont = Jua({
@@ -53,7 +52,7 @@ export default function CombinedWidgetCard({ data }: { data: { title: string, va
                                 padding: 10,
                                 flex: 1,
                                 minWidth: 140,
-                                backgroundColor: "var(--background)",
+                                backgroundColor: "var(--card-background-color)",
                             }}
                         >
                             <h4

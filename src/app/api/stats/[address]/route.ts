@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 
 export const GET = async(_req: Request, { params }: { params: Promise<{ address: string }> }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  
   try {
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
     const p = await params;
 
     const upstream = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stats/${p.address}`, {
@@ -13,8 +13,6 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
       signal: controller.signal,
       cache: "no-store",
     });
-
-    clearTimeout(timeout);
 
     const bodyText = await upstream.text();
     return new NextResponse(bodyText, {
@@ -25,5 +23,7 @@ export const GET = async(_req: Request, { params }: { params: Promise<{ address:
     });
   } catch {
     return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
+  } finally {
+    clearTimeout(timeout);
   }
 }

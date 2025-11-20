@@ -1,8 +1,7 @@
-// src/app/api/auth/lnurl/route.ts
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { bech32m, bech32 } from "@scure/base";
-import { pool } from "../../../../../lib/Postrgre";
+import { pool } from "../../../../server/Postrgre";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL;
 export async function GET() {
@@ -14,15 +13,7 @@ export async function GET() {
     const callback = `${BASE}/api/auth/lnurl/callback?k1=${k1}&tag=login`;
     // console.debug("callback:", callback)
     const lnurl = bech32encode(callback);
-    // console.log("encoded: ", lnurl)
-    // try {
-    //     const decoded_lnurl = bech32decode(lnurl);
-    //     if (callback == decoded_lnurl) {
-    //         console.log("=== OK === ")
-    //     }
-    // } catch (error) {
-    //     console.error("error encoded", error);
-    // }
+
     return NextResponse.json({ lnurl, k1 });
 }
 

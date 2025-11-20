@@ -4,6 +4,7 @@ import Link from "next/link";
 import "./styles.css"
 import { useEffect, useRef, useState } from "react";
 import { addresssExists } from "./api";
+import GoToCommunityPool from "./components/GoToCommunityPool";
 
 
 export default function Home() {
@@ -60,15 +61,7 @@ export default function Home() {
         </button>
       </div>
       <p>Ou</p>
-      <Link href="board/bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae/workers" style={{
-        marginBottom: "3rem"
-      }}>
-        <button className="primary" style={{
-          fontSize: "1rem",
-        }}>
-          <p>Voir les stats de la pool communautaire</p>
-        </button>
-      </Link>
+      <GoToCommunityPool />
       <p style={{
         marginBottom: "0.1rem"
       }}>Ce n&apos;est pas ce que vous cherchiez ?</p>

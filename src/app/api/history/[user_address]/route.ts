@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pool } from "@/../lib/Postrgre";
+import { pool } from "@/server/Postrgre";
 
 export const GET = async (_req: Request, { params }: { params: Promise<{ user_address: string }> }) => {
   try {
@@ -27,7 +27,7 @@ export const GET = async (_req: Request, { params }: { params: Promise<{ user_ad
       [p.user_address]
     )
 
-    return new NextResponse(JSON.stringify(result.rows), {
+    return NextResponse.json(result.rows, {
       headers: {
         "content-type": "application/json",
       },
