@@ -1,9 +1,9 @@
-import { AxisValueFormatterContext, LineChart, LineSeries } from "@mui/x-charts";
+import { AxisValueFormatterContext, LineChart, LineSeries, YAxis } from "@mui/x-charts";
 import { WorkerHistoryRecord } from "../../../../../../models/API Payloads/WorkerHistoryRecord";
 import UnitConverter from "../../../../../../lib/UnitConverter";
 import { frFRLocalText } from '@mui/x-charts/locales';
 
-export default function HashreateLine({ history, showHashrate1h }: { history: WorkerHistoryRecord[], showHashrate1h: boolean }) {
+export default function HashreateLine({ history, showHashrate1h, showWeight }: { history: WorkerHistoryRecord[], showHashrate1h: boolean, showWeight: boolean }) {
     const series: LineSeries[] = []
     if (showHashrate1h) {
         series.push(
@@ -39,43 +39,52 @@ export default function HashreateLine({ history, showHashrate1h }: { history: Wo
                 if (!v) return "0";
                 return UnitConverter.fromNumberToString(v);
             },
-        },
-        {
-            data: history.map((item) => Number.parseFloat(item.avg_weight)),
-            showMark: false,
-            yAxisId: 'weightAxis',
-            label: "Poids",
-            valueFormatter: (v: number | null) => {
-                if (!v) return "0%";
-                return v.toFixed(1) + "%";
-            },
         }
     );
+    const axis: YAxis[] = [
+        {
+            id: 'hashrateAxis',
+            width: 70,
+            label: "Hashrate (H/s)",
+            valueFormatter(value: number, context: AxisValueFormatterContext) {
+                if (context.location === "tick" && context.defaultTickLabel === "") return "";
+                return UnitConverter.fromNumberToString(value, 3);
+            }
+        }
+    ]
+
+    if (showWeight) {
+        series.push(
+            {
+                data: history.map((item) => Number.parseFloat(item.avg_weight)),
+                showMark: false,
+                yAxisId: 'weightAxis',
+                label: "Poids",
+                valueFormatter: (v: number | null) => {
+                    if (!v) return "0%";
+                    return v.toFixed(1) + "%";
+                },
+            }
+        )
+        axis.push(
+            {
+                id: 'weightAxis',
+                position: "right",
+                width: 70,
+                label: "Poids (%)",
+                valueFormatter(value: number, context: AxisValueFormatterContext) {
+                    if (context.location === "tick" && context.defaultTickLabel === "") return "";
+                    return value + "%";
+                }
+            }
+        )
+    }
+
     return (
         <LineChart
             localeText={frFRLocalText}
             height={400}
-            yAxis={[
-                {
-                    id: 'hashrateAxis',
-                    width: 70,
-                    label: "Hashrate (H/s)",
-                    valueFormatter(value: number, context: AxisValueFormatterContext) {
-                        if (context.location === "tick" && context.defaultTickLabel === "") return "";
-                        return UnitConverter.fromNumberToString(value, 3);
-                    }
-                },
-                {
-                    id: 'weightAxis',
-                    position: "right",
-                    width: 70,
-                    label: "Poids (%)",
-                    valueFormatter(value: number, context: AxisValueFormatterContext) {
-                        if (context.location === "tick" && context.defaultTickLabel === "") return "";
-                        return value + "%";
-                    }
-                },
-            ]}
+            yAxis={axis}
             xAxis={[
                 {
                     data: history.map((item) => new Date(item.timestamp)),

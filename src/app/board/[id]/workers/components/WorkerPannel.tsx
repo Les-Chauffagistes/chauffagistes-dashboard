@@ -5,7 +5,7 @@ import { useWorkerStats } from "@/app/hooks/useWorkerStats";
 
 
 
-export default function WorkerPannel({ userAddress, worker }: { userAddress: string, worker: Worker | null }) {
+export default function WorkerPannel({ userAddress, worker, showWeight }: { userAddress: string, worker: Worker | null, showWeight: boolean }) {
     const { stats } = useWorkerStats(userAddress, ExtractWorkername.fromPool(worker?.workername ?? ""));
     if (!worker) {
         return (
@@ -16,7 +16,7 @@ export default function WorkerPannel({ userAddress, worker }: { userAddress: str
                 <h2 style={{ marginTop: "1rem", marginLeft: "1rem" }}>
                     Sélectionnez un mineur
                 </h2>
-                <HashreateLine history={[]} showHashrate1h />
+                <HashreateLine history={[]} showHashrate1h showWeight={showWeight} />
             </div>
         )
     }
@@ -29,7 +29,7 @@ export default function WorkerPannel({ userAddress, worker }: { userAddress: str
             <h2 style={{ marginTop: "1rem", marginLeft: "1rem" }}>
                 {ExtractWorkername.fromPool(worker.workername)}
             </h2>
-            <HashreateLine history={stats} showHashrate1h />
+            <HashreateLine history={stats} showHashrate1h showWeight={showWeight} />
         </div>
     )
 }

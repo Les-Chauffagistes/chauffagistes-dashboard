@@ -1,6 +1,6 @@
 // src/app/api/auth/lnurl/status/route.ts
 import { NextResponse } from "next/server";
-import { pool } from "../../../../../../lib/Postrgre";
+import { pool } from "../../../../../server/Postrgre";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
 
@@ -25,7 +25,7 @@ export async function GET(req: Request) {
         session.user = { id: record.user_id };
         await session.save();
         await pool.query("DELETE FROM lnurl_auth WHERE k1 = $1;", [k1]);
-        return NextResponse.json({ authenticated: true, userId: record.userId });
+        return NextResponse.json({ authenticated: true, userId: record.user_id });
     }
 
     return NextResponse.json({ authenticated: false });

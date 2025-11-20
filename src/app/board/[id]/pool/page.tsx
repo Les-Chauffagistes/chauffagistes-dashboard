@@ -2,35 +2,33 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PoolHistoryRecord } from "../../../../../models/API Payloads/PoolHistoryRecord";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
+import { AxisValueFormatterContext, YAxis } from "@mui/x-charts";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
 import { getAllWorkersHistory, getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
+import ResponsivePieContainer from "./components/ResponsivePieContainer";
+import StatsWidgetBar from "../../components/StatsWidgetBar";
+import CumulatedWorkersLine from "./components/CumulatedWorkersHashrate";
+import StackedStatSelecteor, { OptionsType } from "./components/StackedStatSelector";
 
 import { Weights } from "../../../../../models/API Payloads/Weights";
 import { UserInstantStats } from "../../../../../models/API Payloads/Stats";
 import { AllWorkersHistoryRecord } from "../../../../../models/API Payloads/AllWorkersHistoryRecord";
-
-import StatsWidgetBar from "../../components/StatsWidgetBar";
+import { PoolHistoryRecord } from "../../../../../models/API Payloads/PoolHistoryRecord";
 
 import UnitConverter from "../../../../../lib/UnitConverter";
 
 import "./styles.css";
-import CumulatedWorkersLine from "./components/CumulatedWorkersHashrate";
-import StackedStatSelecteor, { OptionsType } from "./components/StackedStatSelector";
-import { AxisValueFormatterContext, YAxis } from "@mui/x-charts";
-import * as React from "react";
-import ResponsivePieContainer from "./components/ResponsivePieContainer";
 
-
+import { COMMUNITY_POOL_ADDRESS } from "@/app/constants/columns";
 
 export default function Welcome() {
     const path = usePathname();
-    const userId = path?.split("/")[2];
+    const userAddress = path?.split("/")[2];
 
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
     const theme = useMemo(() => createTheme({ palette: { mode: prefersDarkMode ? "dark" : "light" } }), [prefersDarkMode]);
@@ -42,22 +40,40 @@ export default function Welcome() {
     const [stackedStatName, setStackedStatName] = useState<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">>("avg_hashrate1h");
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
+    const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
 
 
     useEffect(() => {
-        getPoolHistory(userId).then((data) => {
-            setPoolStatsHistory(data);
-        });
-        getPoolWeight(userId).then((data) => {
-            setWeights(data);
-        })
-        getPoolStats(userId).then((data) => {
-            setPoolStats(data);
-        })
-        getAllWorkersHistory(userId).then((data) => {
-            setWorkersHistory(data);
-        })
-    }, [userId]);
+        if (!userAddress) return;
+
+        const abortController = new AbortController();
+
+        const fetchData = async () => {
+            try {
+                const [history, weights, stats, workersHist] = await Promise.all([
+                    getPoolHistory(userAddress),
+                    getPoolWeight(userAddress),
+                    getPoolStats(userAddress),
+                    getAllWorkersHistory(userAddress),
+                ]);
+
+                if (abortController.signal.aborted) return;
+
+                setPoolStatsHistory(history);
+                setWeights(weights);
+                setPoolStats(stats);
+                setWorkersHistory(workersHist);
+            } catch (err) {
+                if (!abortController.signal.aborted) {
+                    console.error("Erreur lors du chargement des données de pool:", err);
+                }
+            }
+        };
+
+        fetchData();
+
+        return () => abortController.abort();
+    }, [userAddress]);
 
     if (poolStatsHistory === null || poolStats === null || weights === null || workersHistory == null) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
@@ -67,12 +83,14 @@ export default function Welcome() {
         {
             "displayName": "Hashrate",
             "optionName": "avg_hashrate1h"
-        },
-        {
-            "displayName": "Poids",
-            "optionName": "avg_weight"
         }
     ]
+    if (isCommunityPool) {
+        statsNames.push({
+            "displayName": "Poids",
+            "optionName": "avg_weight"
+        })
+    }
 
     function handleStackedStatChange(statName: keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">) {
         setStackedStatName(statName);
@@ -159,8 +177,8 @@ export default function Welcome() {
                 }
                 {isLargeScreen ?
                     <div style={{ display: "flex", marginTop: 10, height: 400, gap: 10, margin: "0 10px" }}>
-                        <div className="graph" style={{ width: "100%", margin: "0 10px", flex: 1 }}>
-                            <ResponsivePieContainer weights={weights} />
+                        <div className="graph" style={{ width: "100%", flex: 1 }}>
+                            <ResponsivePieContainer weights={weights} isFake={!isCommunityPool} />
                         </div>
                         <div className="graph" style={{ width: "100%", flex: 3 }}>
                             <HashrateChart data={poolStatsHistory} />
@@ -168,7 +186,7 @@ export default function Welcome() {
                     </div>
                     :
                     <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px", flex: 1 }}>
-                        <ResponsivePieContainer weights={weights} />
+                        <ResponsivePieContainer weights={weights} isFake={!isCommunityPool}/>
                     </div>
                 }
                 {isLargeScreen ? 

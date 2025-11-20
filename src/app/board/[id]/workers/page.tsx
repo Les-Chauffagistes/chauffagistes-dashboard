@@ -25,20 +25,23 @@ import { Worker } from "@/../models/Worker";
 
 import "./styles.css";
 
-const COMMUNITY_POOL_ADDRESS = "bc1qh8ge36h2njrp2aqv5ddpyph4g22elzgkds52ae";
+import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
+
+const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
+
+type VisibleColumns = HashrateColumn;
 
 export default function Home() {
-    const [userStats, setUserStats] = useState<UserInstantStats | null>(null); // table
+    const [userStats, setUserStats] = useState<UserInstantStats | null>(null);
     const [weights, setWeights] = useState<Weights[]>([]);
-    const [hashrate1m, setHashrate1m] = useState<boolean>(true);
-    const [hashrate5m, setHashrate5m] = useState<boolean>(true);
-    const [hashrate1hr, setHashrate1hr] = useState<boolean>(true);
-    const [hashrate1d, setHashrate1d] = useState<boolean>(true);
-    const [hashrate7d, setHashrate7d] = useState<boolean>(true);
+    const [visibleColumns, setVisibleColumns] = useState<Set<VisibleColumns>>(new Set(INITIAL_VISIBLE_COLUMNS));
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
     const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    
     const pathname = usePathname();
     const userAddress = pathname?.split("/")[2];
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
@@ -46,55 +49,74 @@ export default function Home() {
     const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
     const theme = useMemo(() => createTheme({ palette: { mode: prefersDarkMode ? "dark" : "light" } }), [prefersDarkMode]);
 
-    // Persist mutable active columns across renders
     const activeColumnsRef = useRef<string[]>([]);
 
     useEffect(() => {
         const stored = localStorage.getItem("activeColumns");
         if (stored) {
-            const arr = JSON.parse(stored);
-            activeColumnsRef.current = arr;
-            setHashrate1m(arr.includes("hashrate1m"));
-            setHashrate5m(arr.includes("hashrate5m"));
-            setHashrate1hr(arr.includes("hashrate1hr"));
-            setHashrate1d(arr.includes("hashrate1d"));
-            setHashrate7d(arr.includes("hashrate7d"));
+            try {
+                const arr = JSON.parse(stored) as string[];
+                activeColumnsRef.current = arr;
+                const validColumns = arr.filter(isValidHashrateColumn);
+                setVisibleColumns(new Set(validColumns));
+            } catch {
+                activeColumnsRef.current = [...HASHRATE_COLUMNS];
+                setVisibleColumns(new Set(INITIAL_VISIBLE_COLUMNS));
+            }
         } else {
-            const defaults = ["hashrate1m", "hashrate5m", "hashrate1hr", "hashrate1d", "hashrate7d"];
-            localStorage.setItem("activeColumns", JSON.stringify(defaults));
-            activeColumnsRef.current = defaults;
-            setHashrate1m(true);
-            setHashrate5m(true);
-            setHashrate1hr(true);
-            setHashrate1d(true);
-            setHashrate7d(true);
+            activeColumnsRef.current = [...HASHRATE_COLUMNS];
+            setVisibleColumns(new Set(INITIAL_VISIBLE_COLUMNS));
         }
-        // Fetch des stats instantannées
-        getPoolStats(userAddress).then((result) => {
-            setUserStats(result);
-        });
-        // Fetch des poids dans la bdd du History Server
-        getPoolWeight(userAddress).then((result) => {
-            setWeights(result);
-        })
-        // Fetch du prix de Bitcoin
-        getBtcPrice().then((result) => {
-            setBitcoinPrice(result.EUR);
-        })
-        // Fetch de la reward du block Bitcoin
-        getBtcBlockReward().then((result) => {
-            setBitcoinBlockReward(result);
-        })
+    }, []);
+
+    useEffect(() => {
+        if (!userAddress) return;
+
+        const abortController = new AbortController();
+        setIsLoading(true);
+        setError(null);
+
+        const fetchData = async () => {
+            try {
+                const [stats, weights, price, blockReward] = await Promise.all([
+                    getPoolStats(userAddress),
+                    getPoolWeight(userAddress),
+                    getBtcPrice(),
+                    getBtcBlockReward(),
+                ]);
+
+                if (abortController.signal.aborted) return;
+
+                setUserStats(stats);
+                setWeights(weights);
+                setBitcoinPrice(price.EUR);
+                setBitcoinBlockReward(blockReward);
+                setIsLoading(false);
+            } catch (err) {
+                if (!abortController.signal.aborted) {
+                    setError(err instanceof Error ? err.message : "Erreur lors du chargement des données");
+                    setIsLoading(false);
+                }
+            }
+        };
+
+        fetchData();
+
+        return () => abortController.abort();
     }, [userAddress]);
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
 
-    if (isCommunityPool && (bitcoinPrice === null && bitcoinBlockReward === null)) {
+    if (isLoading) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
+    if (error) {
+        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Erreur: {error}</div>;
+    }
+
     if (!userStats || !weights.length) {
-        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
+        return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Aucune donnée</div>;
     }
 
     const payload = { ...userStats.workers } as (Worker & { weight: number })[];
@@ -104,86 +126,38 @@ export default function Home() {
         worker.weight = Number.parseFloat(weights.find(w => w.worker_id === workerName)?.avg_weight || "0");
     }
 
-    function persistActiveColumns() {
-        localStorage.setItem("activeColumns", JSON.stringify(activeColumnsRef.current));
-    }
-
-    function hashrate1mHandler(e: boolean) {
-        setHashrate1m(e);
-        if (e) {
-            if (!activeColumnsRef.current.includes("hashrate1m")) {
-                activeColumnsRef.current.push("hashrate1m");
-            }
+    const handleColumnToggle = (column: VisibleColumns) => {
+        const newColumns = new Set(visibleColumns);
+        if (newColumns.has(column)) {
+            newColumns.delete(column);
         } else {
-            activeColumnsRef.current = activeColumnsRef.current.filter(c => c !== "hashrate1m");
+            newColumns.add(column);
         }
-        persistActiveColumns();
-    }
-
-    function hashrate5mHandler(e: boolean) {
-        setHashrate5m(e);
-        if (e) {
-            if (!activeColumnsRef.current.includes("hashrate5m")) {
-                activeColumnsRef.current.push("hashrate5m");
-            }
-        } else {
-            activeColumnsRef.current = activeColumnsRef.current.filter(c => c !== "hashrate5m");
-        }
-        persistActiveColumns();
-    }
-
-    function hashrate1hrHandler(e: boolean) {
-        setHashrate1hr(e);
-        if (e) {
-            if (!activeColumnsRef.current.includes("hashrate1hr")) {
-                activeColumnsRef.current.push("hashrate1hr");
-            }
-        } else {
-            activeColumnsRef.current = activeColumnsRef.current.filter(c => c !== "hashrate1hr");
-        }
-        persistActiveColumns();
-    }
-
-    function hashrate1dHandler(e: boolean) {
-        setHashrate1d(e);
-        if (e) {
-            if (!activeColumnsRef.current.includes("hashrate1d")) {
-                activeColumnsRef.current.push("hashrate1d");
-            }
-        } else {
-            activeColumnsRef.current = activeColumnsRef.current.filter(c => c !== "hashrate1d");
-        }
-        persistActiveColumns();
-    }
-
-    function hashrate7dHandler(e: boolean) {
-        setHashrate7d(e);
-        if (e) {
-            if (!activeColumnsRef.current.includes("hashrate7d")) {
-                activeColumnsRef.current.push("hashrate7d");
-            }
-        } else {
-            activeColumnsRef.current = activeColumnsRef.current.filter(c => c !== "hashrate7d");
-        }
-        persistActiveColumns();
-    }
+        setVisibleColumns(newColumns);
+        localStorage.setItem("activeColumns", JSON.stringify(Array.from(newColumns)));
+    };
 
     function orderHandler(e: ChangeEvent<HTMLSelectElement>) {
         const value = e.target.value;
         if (data.length > 0 && value in data[0]) {
             setOrderBy(value as keyof CleanWorkerHashrate);
-        } else {
-            console.warn(`Invalid order value: ${value}`);
         }
     }
 
     const options = [
-        { id: "1m", label: "1 m", checked: hashrate1m, onChange: (e: boolean) => hashrate1mHandler(e) },
-        { id: "5m", label: "5 m", checked: hashrate5m, onChange: (e: boolean) => hashrate5mHandler(e) },
-        { id: "1h", label: "1 h", checked: hashrate1hr, onChange: (e: boolean) => hashrate1hrHandler(e) },
-        { id: "1d", label: "1 j", checked: hashrate1d, onChange: (e: boolean) => hashrate1dHandler(e) },
-        { id: "7d", label: "7 j", checked: hashrate7d, onChange: (e: boolean) => hashrate7dHandler(e) },
+        { id: "1m", label: "1 m", checked: visibleColumns.has("hashrate1m"), onChange: () => handleColumnToggle("hashrate1m") },
+        { id: "5m", label: "5 m", checked: visibleColumns.has("hashrate5m"), onChange: () => handleColumnToggle("hashrate5m") },
+        { id: "1h", label: "1 h", checked: visibleColumns.has("hashrate1hr"), onChange: () => handleColumnToggle("hashrate1hr") },
+        { id: "1d", label: "1 j", checked: visibleColumns.has("hashrate1d"), onChange: () => handleColumnToggle("hashrate1d") },
+        { id: "7d", label: "7 j", checked: visibleColumns.has("hashrate7d"), onChange: () => handleColumnToggle("hashrate7d") },
     ];
+
+    // Visibility flags for MainGrid
+    const isHashrate1mVisible = visibleColumns.has("hashrate1m");
+    const isHashrate5mVisible = visibleColumns.has("hashrate5m");
+    const isHashrate1hrVisible = visibleColumns.has("hashrate1hr");
+    const isHashrate1dVisible = visibleColumns.has("hashrate1d");
+    const isHashrate7dVisible = visibleColumns.has("hashrate7d");
 
     function normalizeHashrate(workers: (Worker & { weight: number })[]): CleanWorkerHashrate[] {
         return Object.entries(workers).map(([, worker]) => {
@@ -241,16 +215,16 @@ export default function Home() {
                                 <MainGrid workers={data}
                                     btcPrice={bitcoinPrice}
                                     isCommunityPool={isCommunityPool}
-                                    isHashrate1mVisible={hashrate1m}
-                                    isHashrate5mVisible={hashrate5m}
-                                    isHashrate1hrVisible={hashrate1hr}
-                                    isHashrate1dVisible={hashrate1d}
-                                    isHashrate7dVisible={hashrate7d}
+                                    isHashrate1mVisible={isHashrate1mVisible}
+                                    isHashrate5mVisible={isHashrate5mVisible}
+                                    isHashrate1hrVisible={isHashrate1hrVisible}
+                                    isHashrate1dVisible={isHashrate1dVisible}
+                                    isHashrate7dVisible={isHashrate7dVisible}
                                     onSelectWorker={setSelectedWorker}
                                 />
                             </div>
                             <div style={{ display: "flex", flex: 2, backgroundColor: "var(--card-background-color)", borderRadius: 8, border: "1px solid var(--card-outline-color)" }}>
-                                <WorkerPannel worker={selectedWorker} userAddress={userAddress} />
+                                <WorkerPannel worker={selectedWorker} userAddress={userAddress} showWeight={isCommunityPool} />
                             </div>
                         </div>
                     </> :

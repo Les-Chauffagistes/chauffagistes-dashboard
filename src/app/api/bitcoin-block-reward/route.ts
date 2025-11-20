@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  
   try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
-
     const upstream = await fetch("https://swakraft.fr/api/bitcoin-block-reward", {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       signal: controller.signal,
       cache: "no-store",
     });
-
-    clearTimeout(timeout);
 
     const bodyText = await upstream.text();
     return new NextResponse(bodyText, {
@@ -23,5 +21,7 @@ export const GET = async () => {
     });
   } catch {
     return NextResponse.json({ error: "upstream_failed" }, { status: 502 });
+  } finally {
+    clearTimeout(timeout);
   }
 } 
