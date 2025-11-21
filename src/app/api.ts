@@ -33,5 +33,5 @@ export async function getAllWorkersHistory(userAddress: string): Promise<AllWork
 }
 
 export async function addresssExists(address: string): Promise<boolean> {
-    return await fetch(`/api/${address}/exists`).then((res) => res.json());
+    return (await fetch(`/api/${address}/exists`).then((res) => res.json())).exists;
 }
