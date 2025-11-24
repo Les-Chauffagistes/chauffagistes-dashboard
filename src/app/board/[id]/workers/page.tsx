@@ -274,7 +274,7 @@ export default function Home() {
                                 </select>
                             </div>
                         </div>
-                        <WorkerList workers={data} orderBy={orderBy} userAddress={userAddress} btcPrice={bitcoinPrice} btcPerBlock={bitcoinBlockReward} isCommunityPool={isCommunityPool} />
+                        <WorkerList workers={data} orderBy={orderBy} userAddress={userAddress} btcPrice={bitcoinPrice} isCommunityPool={isCommunityPool} />
                     </div>
                 }
             </div>

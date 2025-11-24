@@ -45,7 +45,7 @@ function ShareBar({ worker }: { worker: CleanWorkerHashrate }) {
     )
 }
 
-function WeightBar({ worker, btcPrice, btcPerBlock }: { worker: CleanWorkerHashrate & { weight: number }, btcPrice: number | null, btcPerBlock: number | null }) {
+function WeightBar({ worker, btcPrice }: { worker: CleanWorkerHashrate & { weight: number }, btcPrice: number | null }) {
     return (
         <div className="weight" style={{
             display: "flex",
@@ -57,16 +57,16 @@ function WeightBar({ worker, btcPrice, btcPerBlock }: { worker: CleanWorkerHashr
                 <p>{formatNumber(worker.weight)}%</p>
             </div>
             <div className="weight-cell">
-                <p>{btcPerBlock ? formatNumber(worker.weight * btcPerBlock) : "-"} ₿</p>
+                <p>{worker.rewardBtc ? formatNumber(worker.rewardBtc) : "-"} ₿</p>
             </div>
             <div className="weight-cell">
-                <p>{btcPerBlock && btcPrice ? formatNumber(worker.weight * btcPerBlock * btcPrice) : "-"} €</p>
+                <p>{worker.rewardBtc && btcPrice ? formatNumber(worker.rewardBtc * btcPrice) : "-"} €</p>
             </div>
         </div>
     )
 }
 
-export default function WorkerCard({ worker, btcPrice, btcPerBlock, isCommunityPool }: { worker: CleanWorkerHashrate & { weight: number }, btcPrice: number | null, btcPerBlock: number | null, isCommunityPool: boolean }) {
+export default function WorkerCard({ worker, btcPrice, isCommunityPool }: { worker: CleanWorkerHashrate & { weight: number }, btcPrice: number | null, isCommunityPool: boolean }) {
     return (
         <div style={{
             border: "1px solid var(--card-outline-color)",
@@ -99,7 +99,7 @@ export default function WorkerCard({ worker, btcPrice, btcPerBlock, isCommunityP
                     {isCommunityPool ?
                         <div>
                             <p>Poids & récompense</p>
-                            <WeightBar worker={worker} btcPrice={btcPrice} btcPerBlock={btcPerBlock} />
+                            <WeightBar worker={worker} btcPrice={btcPrice} />
                         </div>:
                         null
                     }
