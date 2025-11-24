@@ -4,7 +4,7 @@ import WorkerPopup from "./WorkerPopup"
 
 
 
-export default function WorkerList({ workers, orderBy, userAddress, btcPrice, btcPerBlock, isCommunityPool }: Readonly<{ workers: (CleanWorkerHashrate & { weight: number })[], orderBy: keyof (CleanWorkerHashrate & { weight: number }), userAddress: string, btcPrice: number | null, btcPerBlock: number | null, isCommunityPool: boolean }>) {
+export default function WorkerList({ workers, orderBy, userAddress, btcPrice, isCommunityPool }: Readonly<{ workers: (CleanWorkerHashrate & { weight: number })[], orderBy: keyof (CleanWorkerHashrate & { weight: number }), userAddress: string, btcPrice: number | null, isCommunityPool: boolean }>) {
     return (
         <div style={{
             display: "flex",
@@ -19,7 +19,7 @@ export default function WorkerList({ workers, orderBy, userAddress, btcPrice, bt
                             border: "none",
                             cursor: "pointer"
                         }}>
-                            <WorkerCard worker={worker} btcPrice={btcPrice} btcPerBlock={btcPerBlock} isCommunityPool={isCommunityPool} />
+                            <WorkerCard worker={worker} btcPrice={btcPrice} isCommunityPool={isCommunityPool} />
                         </button>
                     </WorkerPopup>
                 )
