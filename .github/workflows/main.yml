@@ -17,17 +17,16 @@ jobs:
 
       - run: npm ci
       - run: npm run build
-      - run: npm ci --only=production
 
       - name: pack
         run: |
           TS=$(date -u +"%Y%m%dT%H%M%SZ")
           mkdir artifact
-          tar -C . -czf artifact/myapp-${TS}.tar.gz \
-            .next public package.json package-lock.json node_modules
+          tar -C . -czf artifact/stats.chauffagistes-${TS}.tar.gz \
+            .next public package.json package-lock.json
           echo "TS=$TS" >> $GITHUB_ENV
 
       - uses: actions/upload-artifact@v4
         with:
-          name: myapp-${{ env.TS }}
-          path: artifact/myapp-${{ env.TS }}.tar.gz
+          name: stats.chauffagistes-${{ env.TS }}
+          path: artifact/stats.chauffagistes-${{ env.TS }}.tar.gz
