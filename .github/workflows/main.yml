@@ -26,6 +26,13 @@ jobs:
             .next package.json package-lock.json
           echo "TS=$TS" >> $GITHUB_ENV
 
+      - name: Create git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag v${{ env.TS }}
+          git push origin v${{ env.TS }}
+
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
@@ -42,5 +49,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: artifact/stats.chauffagistes-${{ env.TS }}.tar.gz
+          tag_name: v${{ env.TS }}
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
