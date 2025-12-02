@@ -26,14 +26,19 @@ jobs:
             .next package.json package-lock.json
           echo "TS=$TS" >> $GITHUB_ENV
 
-      - name: Create git tag
+      - name: Push git tag
         env:
           GITHUB_PAT: ${{ secrets.DEPLOY_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+      
+          # Setup credential helper pour utiliser le token
+          git remote set-url origin https://github.com/Les-Chauffagistes/chauffagistes-dashboard.git
+          git config credential.helper '!f() { echo "username=x-access-token"; echo "password=$GITHUB_PAT"; }; f'
+      
           git tag v$TS
-          git push https://${GITHUB_PAT}@github.com/Les-Chauffagistes/chauffagistes-dashboard.git v$TS
+          git push origin v$TS
 
       - name: Create GitHub Release
         id: create_release
