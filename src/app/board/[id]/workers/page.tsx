@@ -27,6 +27,7 @@ import "./styles.css";
 
 import { HASHRATE_COLUMNS, COMMUNITY_POOL_ADDRESS, isValidHashrateColumn, type HashrateColumn } from "@/app/constants/columns";
 
+
 const INITIAL_VISIBLE_COLUMNS = new Set(HASHRATE_COLUMNS);
 
 type VisibleColumns = HashrateColumn;
@@ -41,7 +42,7 @@ export default function Home() {
     const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    
+
     const pathname = usePathname();
     const userAddress = pathname?.split("/")[2];
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
@@ -183,6 +184,8 @@ export default function Home() {
 
     const data = normalizeHashrate(payload);
 
+
+
     return (
         <ThemeProvider theme={theme}>
             <div style={{
@@ -209,7 +212,11 @@ export default function Home() {
                                 }
                             ]} />
                         </div>
-                        <Toolbar options={options} />
+                        <div style={{
+                            display: "flex"
+                        }}>
+                            <Toolbar options={options} />
+                        </div>
                         <div id="main-view" style={{ display: "flex", flexWrap: "wrap", gap: 10, margin: 10 }}>
                             <div style={{ display: "flex", flex: 3 }}>
                                 <MainGrid workers={data}

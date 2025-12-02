@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-
-import { pool } from "../../../../../server/Postrgre";
 import { ec as EC } from "elliptic";
+import { prisma } from "@/server/Prisma";
 const secp = new EC("secp256k1");
 
 
@@ -21,34 +20,37 @@ export async function GET(req: Request) {
     const ok = pub.verify(k1Bytes, sigDER);
     if (!ok) return NextResponse.json({ status: "ERROR" });
 
-    const auth = await pool.query(
-        "SELECT * FROM lnurl_auth WHERE k1 = $1",
-        [k1]
-    );
-    if (auth.rows.length === 0)
-        return NextResponse.json({ status: "ERROR" });
+    const auth = await prisma.lnurl_auth.findUnique({ where: { k1 } });
+    if (!auth) return NextResponse.json({ status: "ERROR" });
 
-    let userId: number;
+    let userId: bigint;
 
-    const existing = await pool.query(
-        "SELECT id FROM users WHERE ln_key = $1",
-        [key]
-    );
+    const account = await prisma.ln_users.findFirst({
+        where: { ln_key: key }
+    });
 
-    if (existing.rows.length > 0) {
-        userId = existing.rows[0].id;
+    if (account) {
+        userId = account.user_id!;
     } else {
-        const inserted = await pool.query(
-            "INSERT INTO users (ln_key) VALUES ($1) RETURNING id",
-            [key]
-        );
-        userId = inserted.rows[0].id;
+        const user = await prisma.users.create({ data: {} });
+
+        await prisma.ln_users.create({
+            data: {
+                ln_key: key,
+                user_id: user.id
+            }
+        });
+
+        userId = user.id;
     }
 
-    await pool.query(
-        "UPDATE lnurl_auth SET status='done', user_id=$1 WHERE k1=$2",
-        [userId, k1]
-    );
+    await prisma.lnurl_auth.update({
+        where: { k1 },
+        data: {
+            status: "done",
+            user_id: userId
+        }
+    });
 
     return NextResponse.json({ status: "OK" });
 }

@@ -1,0 +1,10 @@
+#buttons {
+    padding: 10px;
+    gap: 10px;
+}
+
+@media screen and (max-width: 800px) {
+    #buttons button {
+        width: 100%;
+    }
+}

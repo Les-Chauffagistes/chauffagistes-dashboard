@@ -1,64 +1,119 @@
-// src/app/board/[id]/my/page.tsx
 "use client";
 
-import { QrCodeIcon } from "lucide-react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
+import { mutate } from "swr";
+import CreateAccount from "./components/CreateAccount";
+import WorkerManager from "./components/WorkersManager";
+import { useSession } from "@/app/hooks/useSession";
+import { usePathname } from "next/navigation";
+import { getLinkedWorkers, patchUser } from "@/app/api";
+import Login from "./components/Login";
+import PopupLN from "@/app/start/[id]/steps/S1/Popup";
+import Popup from "@/app/components/Popup";
+import "./styles.css";
+import WorkerHint from "./components/WorkerHint";
+import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
 
 export default function LoginPage() {
+    const [k1, setK1] = useState<string | null>(null);
+    const [lnurl, setLnurl] = useState<string | null>(null);
+    const { user, isLoading, isError, error } = useSession();
+    const [open, setOpen] = useState(false);
+    const addressRef = useRef<HTMLInputElement>(null);
+    const [linkedWorkers, setLinkedWorkers] = useState<LinkedWorkers[] | null>(null);
+
+    const path = usePathname();
+
+    const userAddress = path.split("/")[2];
+
+    useEffect(() => {
+        fetch("/api/auth/lnurl")
+            .then(r => r.json())
+            .then(d => {
+                setK1(d.k1);
+                setLnurl(d.lnurl);
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!user) return;
+        getLinkedWorkers(userAddress).then(d => setLinkedWorkers(d));
+    }, [user, userAddress]);
+
+    useEffect(() => {
+        if (!k1) return;
+        let i: ReturnType<typeof setInterval> | null = null;
+
+        i = setInterval(async () => {
+            if (user) { clearInterval(i!) }
+            const r = await fetch(`/api/auth/lnurl/status?k1=${k1}`);
+            const d = await r.json();
+
+            if (!d.authenticated) return;
+
+            clearInterval(i!);
+            i = null;
+
+            await mutate("/api/session")
+
+            setOpen(false);
+
+        }, 1500);
+
+        return () => { if (i) clearInterval(i); };
+    }, [k1, user, userAddress]); // userAddress added to fix build failure. CHECK REQUIRED
+
+    const style: CSSProperties = {
+        margin: "auto",
+        textAlign: "center",
+    }
+
+    if (isError) {
+        if (error.status !== 401) {
+            return <p style={style}>Erreur d&apos;authentification</p>
+        }
+    }
+    if (isLoading) return <p style={style}>Relecture de la blockchain...</p>
+    if (user) {
+        if (user.pseudo && linkedWorkers !== null) {
+            function updateAddress() {
+                if (addressRef.current === null) return;
+                patchUser({ address: addressRef.current.value }).then(() => mutate("/api/session"));
+            }
+            
+            return (
+                <>
+                    <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
+                        <input ref={addressRef} type="text" defaultValue={user.address ?? ""} />
+                    </Popup>
+                    <div style={{
+                        height: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 10,
+                        width: "50%",
+                        minWidth: 400,
+                        margin: "0 auto"
+                    }}>
+                        <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers ?? []} />
+                        {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers ?? []} />}
+                    </div>
+                </>
+            )
+        }
+
+        return <CreateAccount continueHandler={(username) => {
+            patchUser({ pseudo: username });
+            mutate("/api/session");
+        }} />
+    }
+
     return (
-        <div style={{
-            display: "flex",
-            height: "100%",
-        }}>
-            <div style={{
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "100%",
-                gap: 20,
-            }}>
-                <p style={{ textAlign: "center" }}>Authentification via Lightning bientôt disponible</p>
-                <QrCodeIcon color={"var(--orange)"} size={32} />
-            </div>
-        </div>
+        <>
+            <PopupLN lnurl={lnurl} open={open} setOpen={setOpen} />
+            <Login userAddress={userAddress} setOpen={setOpen} />
+        </>
     )
-
-    // Code déprécié - AuthPasskey supprimé
-    // const [k1, setK1] = useState<string | null>(null);
-    // const [lnurl, setLnurl] = useState<string | null>(null);
-    // const [authenticated, setAuthenticated] = useState(false);
-
-    // useEffect(() => {
-    //     fetch("/api/auth/lnurl")
-    //         .then(r => r.json())
-    //         .then(d => {
-    //             setK1(d.k1);
-    //             setLnurl(d.lnurl);
-    //         });
-    // }, []);
-
-    // useEffect(() => {
-    //     if (!k1) return;
-    //     const interval = setInterval(async () => {
-    //         const r = await fetch(`/api/auth/lnurl/status?k1=${k1}`);
-    //         const d = await r.json();
-    //         if (d.authenticated) {
-    //             setAuthenticated(true);
-    //             clearInterval(interval);
-    //         }
-    //     }, 1500);
-    //     return () => clearInterval(interval);
-    // }, [k1]);
-
-    // if (!lnurl) return null;
-    // if (authenticated) return <div>Connecté.</div>;
-
-    // return (
-    //     <div style={{
-    //         backgroundColor: "white",
-    //         padding: 30
-    //     }}>
-    //         <QRCode value={"lightning:"+lnurl} />
-    //     </div>
-    // );
 }
