@@ -1,4 +1,4 @@
-name: build
+name: build-and-release
 on:
   push:
     branches: [main]
@@ -18,15 +18,29 @@ jobs:
       - run: npm ci
       - run: npm run build
 
-      - name: pack
+      - name: Pack
         run: |
           TS=$(date -u +"%Y%m%dT%H%M%SZ")
-          mkdir artifact
+          mkdir -p artifact
           tar -C . -czf artifact/stats.chauffagistes-${TS}.tar.gz \
             .next package.json package-lock.json
           echo "TS=$TS" >> $GITHUB_ENV
 
-      - uses: actions/upload-artifact@v4
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
         with:
-          name: stats.chauffagistes-${{ env.TS }}
-          path: artifact/stats.chauffagistes-${{ env.TS }}.tar.gz
+          tag_name: "v${{ env.TS }}"
+          release_name: "Release ${{ env.TS }}"
+          body: "Automated release ${{ env.TS }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact to release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifact/stats.chauffagistes-${{ env.TS }}.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
