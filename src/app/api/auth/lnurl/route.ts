@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { bech32m, bech32 } from "@scure/base";
-import { pool } from "../../../../server/Postrgre";
+import { prisma } from "@/server/Prisma";
 
 const BASE = process.env.NEXT_PUBLIC_BASE_URL;
+
 export async function GET() {
     const k1 = crypto.randomBytes(32).toString("hex");
 
-    // stocker k1 dans ta DB avec status “pending”
-    await pool.query("INSERT INTO lnurl_auth (k1, status) VALUES ($1, 'pending');", [k1]);
+    await prisma.lnurl_auth.create({ data: { k1, status: "pending"} });
 
     const callback = `${BASE}/api/auth/lnurl/callback?k1=${k1}&tag=login`;
     // console.debug("callback:", callback)
@@ -17,7 +17,7 @@ export async function GET() {
     return NextResponse.json({ lnurl, k1 });
 }
 
-// encode LNURL en bech32
+
 function bech32mencode(url: string) {
     const words = bech32m.toWords(Buffer.from(url, "utf8"));
     return bech32m.encode("lnurl", words, 1023);

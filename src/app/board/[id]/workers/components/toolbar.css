@@ -4,6 +4,7 @@
   align-items: center;
   gap: 8px;
   margin-left: 15px;
+  margin-right: 10px;
 }
 
 /* Bouton engrenage */
@@ -40,7 +41,6 @@
 .toolbar-panel.open {
   max-width: 500px; /* largeur max souhaitée */
   opacity: 1;
-  margin-left: 10px;
 }
 
 /* Style des cases */

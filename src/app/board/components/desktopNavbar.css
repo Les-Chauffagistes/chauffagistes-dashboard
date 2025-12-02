@@ -1,6 +1,14 @@
+#desktop-navbar div {
+    line-height: 1;        /* élimine les variations verticales */
+    font-weight: 600;      /* poids constant */
+    display: flex;
+    align-items: center;   /* encore plus de stabilité verticale */
+    padding: 5px 10px;
+    border-radius: 7px;
+}
+
 .des-nav-active {
-    color: var(--desktop-navbar-active-color) !important;
-    font-weight: 900 !important;
+    background-color: var(--desktop-navbar-active-color);
 }
 
 @media screen and (max-width: 800px) {

@@ -1,6 +1,5 @@
 import { DesktopNavbar } from "../components/DesktopNavbar";
 import MobileNavbar from "../components/MobileNavbar";
-import "./styles.css"
 
 export default function Layout({ children }: Readonly<{children: React.ReactNode;}>) {
     return (

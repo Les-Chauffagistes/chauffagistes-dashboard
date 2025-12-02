@@ -3,26 +3,20 @@ import { NextResponse } from "next/server";
 import { pool } from "../../../../../server/Postrgre";
 import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
-
-const sessionOptions = {
-    password: process.env.SESSION_PASSWORD!,
-    cookieName: "session",
-    cookieOptions: {
-        secure: true,
-    },
-};
+import { sessionOptions } from "@/app/api/lib/session";
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const k1 = searchParams.get("k1");
 
-    const result = await pool.query("SELECT status, user_id FROM lnurl_auth WHERE k1 = $1;", [k1]);
+    const result = await pool.query("SELECT * FROM lnurl_auth WHERE k1 = $1;", [k1]);
     const record = result.rows[0];
     if (!record) return NextResponse.json({ authenticated: false });
 
     if (record.status === "done") {
-        const session = await getIronSession<{user: {id: string}}>(await cookies(), sessionOptions);
+        const session = await getIronSession<{user: {id: string} | null}>(await cookies(), sessionOptions);
         session.user = { id: record.user_id };
+        console.log("saving session", {session});
         await session.save();
         await pool.query("DELETE FROM lnurl_auth WHERE k1 = $1;", [k1]);
         return NextResponse.json({ authenticated: true, userId: record.user_id });

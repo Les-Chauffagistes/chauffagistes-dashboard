@@ -2,3 +2,21 @@
     text-align: center;
     margin: 0 auto;
 }
+
+/* Conteneur principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 100dvh;      /* garantit au moins la hauteur de l’écran */
+  overflow: auto;          /* scroll si le contenu dépasse */
+  background-color: var(--background);
+}
+
+/* Wrapper du contenu pour centrer sur grands écrans */
+.content-wrapper {
+  max-width: 800px;        /* limite la largeur sur grands écrans */
+  width: 100%;
+  margin: auto 0;          /* centrage vertical dans le wrapper si possible */
+}

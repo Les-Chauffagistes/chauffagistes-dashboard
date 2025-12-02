@@ -1,0 +1,7 @@
+input[type=text] {
+  border: 1px solid var(--input-border-color);
+  background-color: var(--input-background-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
