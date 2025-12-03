@@ -43,7 +43,7 @@ export default function Home() {
           alignItems: "center",
           width: "100%",
           maxWidth: "800px",
-          flex: "1 0 auto"  // permet de prendre tout l'espace disponible mais croît si contenu plus grand
+          flex: "1 0 auto"
         }}>
 
 
@@ -79,15 +79,28 @@ export default function Home() {
           <p >Rendez-vous sur la page d&apos;accueil de la pool</p>
           <Link href="https://chauffagistes-pool.fr">
             <div style={{
-              border: "1px solid #ccc",
-              padding: "1rem",
-              borderRadius: 20,
+              borderTopLeftRadius: 50,
+              borderBottomLeftRadius: 50,
+              borderTopRightRadius: 30,
+              borderBottomRightRadius: 30,
               width: "fit-content",
-              margin: "0 auto"
+              margin: "10px auto",
+              display: "flex",
+              alignItems: "center",
+              background: "linear-gradient(180deg, #eda042ff 0%, var(--orange) 100%)",
+              //border: "1px solid var(--orange)",
+              gap: 10,
+              paddingRight: 20,
             }}>
-              <h3>Présentation générale de la Pool</h3>
+            <img src="/icon-round.png" style={{ width: "100px", height: "100px" }} />
+            <div>
+              <h2 style={{
+                marginBottom: "0.2rem",
+                color: "var(--background)"
+              }}>Présentation générale de la Pool</h2>
               <p>Indépendant, et Français</p>
-              <p>Solo mining ou mutualisé</p>
+              <p>Solo mining — Mutualisé privé — Mutualisé communautaire</p>
+            </div>
             </div>
           </Link>
         </div >
