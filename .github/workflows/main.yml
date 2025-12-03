@@ -21,8 +21,11 @@ jobs:
         env:
           DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
         run: npx prisma generate
-        
-      - run: npm run build
+
+      - name: next build
+        env: 
+          SESSION_PASSWORD: 1234
+        run: npm run build
 
       - name: Pack
         run: |
