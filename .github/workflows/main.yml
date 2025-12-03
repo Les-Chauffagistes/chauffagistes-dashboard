@@ -68,3 +68,9 @@ jobs:
           tag_name: v${{ env.TS }}
         env:
           GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: notify-deploy
+        run: |
+          curl -X POST ${{ secrets.DEPLOY_URL }} \
+            -H "X-Deploy-Token: ${{ secrets.DEPLOY_SECRET }}" \
+            -d '{}'
