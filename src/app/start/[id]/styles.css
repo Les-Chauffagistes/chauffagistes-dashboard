@@ -1,0 +1,190 @@
+:root {
+  --background: #ffffff;
+  --foreground: #1b1813;
+  --orange: #d37a0d;
+  --browser-orange: #ce8415ff;
+  --gray: #f2f2f2;
+  --secondary-white-text-color: #202020;
+  --card-background-color: #e9e9e9;
+  --card-outline-color: #c2c2c2;
+  --input-background-color: #efefef;
+  --input-border-color: #e0e0e0;
+  --desktop-navbar-background-color: var(--browser-orange);
+  --desktop-navbar-active-color: #ffffff;
+  --mobile-navbar-background-color: var(--browser-orange);
+  --mobile-navbar-active-color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1f1f1f;
+    --foreground: #ededed;
+    --gray: #1f1f1f;
+    --secondary-white-text-color: #b0b0b0;
+    --card-background-color: #2b2b2b;
+    --card-outline-color: #4B4B4B;
+    --input-background-color: #1e1e1e;
+    --input-border-color: #282828;
+    --desktop-navbar-background-color: #1f1f1f;
+    --desktop-navbar-active-color: var(--orange);
+    --mobile-navbar-active-color: var(--orange);
+    --mobile-navbar-background-color: #1f1f1f;
+  }
+
+  #bg {
+    display: none;
+  }
+
+}
+
+#card-container {
+  height: 420px;
+}
+
+.card {
+  position: absolute;
+  border-radius: 50px;
+  padding: 20px;
+  height: 400px;
+  width: 100%;
+  background: var(--card-background-color);
+  transition:
+    transform 350ms cubic-bezier(.2, .9, .2, 1),
+    opacity 300ms ease,
+    filter 300ms ease;
+}
+
+.card-number {
+  color: var(--background);
+}
+
+.is-top-enter {
+  animation: cardEnter 420ms cubic-bezier(.2, .7, .2, 1) forwards;
+  z-index: 999;
+}
+
+@keyframes cardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(90px) scale(1.1);
+    filter: blur(10);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0px) scale(1);
+    filter: blur(0);
+  }
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50px;
+  border: 1px solid var(--card-outline-color);
+  opacity: var(--depth-fade, 1);
+  /* fade identique */
+  transition: opacity 300ms ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: var(--gray);
+  /* la couleur du body */
+  opacity: var(--depth-fade, 0);
+  transition: opacity 300ms ease;
+  border-radius: 50;
+}
+
+.card>* {
+  position: relative;
+  z-index: 2;
+}
+
+a {
+  color: var(--orange) !important;
+}
+
+#title {
+  margin: 1.5rem;
+  text-align: center;
+  font-weight: 900;
+  font-size: 2.8rem;
+}
+
+.card input {
+  width: 50%;
+  max-width: 300px;
+}
+
+@media (max-width: 800px) {
+
+  #card-container {
+    height: 100%;
+  }
+
+  .card-name {
+    font-size: 1.3rem;
+  }
+
+  .card {
+    width: 100%;
+    height: calc(100% - 40px);
+    flex: 1;
+  }
+
+  .card input {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  #title {
+    margin: 10px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.8rem;
+  }
+
+  #description {
+    display: none
+  }
+
+}
+
+input[type=text] {
+  border: 1px solid var(--input-border-color);
+  background-color: var(--input-background-color);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+
+  .card-number {
+    color: var(--foreground);
+  }
+}
+
+:root{
+  --tile-size: 160px;     /* taille de la tuile (ajuste densité) */
+  --opacity: 0.7;        /* opacité du logo */
+}
+
+
+.btc-bg {
+  min-height:100vh;
+  background-image: url("data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20100%27%3E%3Cg%20opacity%3D%270.08%27%3E%3Ccircle%20cx%3D%2750%27%20cy%3D%2750%27%20r%3D%2736%27%20stroke%3D%27white%27%20stroke-width%3D%276%27%20fill%3D%27none%27%2F%3E%3Ctext%20x%3D%2750%27%20y%3D%2762%27%20font-size%3D%2752%27%20text-anchor%3D%27middle%27%20font-family%3D%27Arial%2C%20Helvetica%2C%20sans-serif%27%20fill%3D%27white%27%3E%E2%82%BF%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  background-repeat: repeat;
+  background-position: 0 0;
+  background-size: var(--tile-size) var(--tile-size);
+  /* optionnel : rendre le motif moins net mais plus discret */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

@@ -1,18 +1,8 @@
 // /src/app/layout.tsx
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import ThemeBody from "./ThemeBody";
+import AuthWrapper from "./authWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Dashboard Chauffagistes",
@@ -22,18 +12,17 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode; 
+  children: React.ReactNode;
 }>) {
   return (
     <html lang="fr">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-
       </head>
-      <ThemeBody className={`${geistSans.variable} ${geistMono.variable}`}>
+      <AuthWrapper>
         {children}
-      </ThemeBody>
+      </AuthWrapper>
     </html>
   );
 }

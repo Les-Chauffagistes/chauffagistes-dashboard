@@ -1,4 +1,3 @@
-// Format des données du tableau (fusionné avec weights)
 export interface CleanWorkerHashrate {
     workername: string
     hashrate1m: number
