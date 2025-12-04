@@ -44,6 +44,10 @@ export { Prisma }
 path.join(__dirname, "libquery_engine-darwin-arm64.dylib.node")
 path.join(process.cwd(), "generated/prisma/libquery_engine-darwin-arm64.dylib.node")
 
+// file annotations for bundling tools to include these files
+path.join(__dirname, "libquery_engine-darwin.dylib.node")
+path.join(process.cwd(), "generated/prisma/libquery_engine-darwin.dylib.node")
+
 /**
  * Model lnurl_auth
  * 
