@@ -34,6 +34,10 @@ const config: runtime.GetPrismaClientConfig = {
         "fromEnvVar": null,
         "value": "darwin-arm64",
         "native": true
+      },
+      {
+        "fromEnvVar": null,
+        "value": "darwin"
       }
     ],
     "previewFeatures": [],
@@ -47,6 +51,7 @@ const config: runtime.GetPrismaClientConfig = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -55,8 +60,8 @@ const config: runtime.GetPrismaClientConfig = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel lnurl_auth {\n  k1         String    @id\n  status     String\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  user_id    BigInt?\n}\n\n/// This table has subclasses and requires additional setup for migrations. Visit https://pris.ly/d/table-inheritance for more info.\n/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.\nmodel worker_stats_raw {\n  worker_id      String\n  timestamp      DateTime @default(now()) @db.Timestamptz(6)\n  avg_hashrate1m BigInt?\n  avg_hashrate5m BigInt?\n  avg_hashrate1h BigInt?\n  avg_hashrate1d BigInt?\n  avg_hashrate7d BigInt?\n  avg_weight     Decimal? @db.Decimal(6, 3)\n  user           String?\n\n  @@index([timestamp(sort: Desc)])\n  @@index([user, worker_id, timestamp(sort: Desc)])\n  @@ignore\n}\n\n/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments\nmodel workernames {\n  workername  String\n  user        BigInt\n  status      String   @default(\"pending\")\n  created_at  DateTime @default(now()) @db.Date\n  btc_address String\n  code        String\n  users       users    @relation(fields: [user], references: [id], onDelete: Cascade, map: \"fk workernames.user\")\n\n  @@id([workername, user, btc_address])\n}\n\nmodel discord_users {\n  id           String @id\n  discord_name String\n  user_id      BigInt\n  users        users  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: \"fk dc_users.users\")\n}\n\nmodel ln_users {\n  id      BigInt  @id(map: \"users_pkey\") @default(autoincrement())\n  ln_key  String?\n  user_id BigInt?\n  users   users?  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: \"ln_users_users_id_fk\")\n}\n\nmodel users {\n  id            BigInt          @id(map: \"users_pkey1\") @default(autoincrement())\n  pseudo        String?\n  created_at    DateTime        @default(now()) @db.Date\n  address       String?\n  discord_users discord_users[]\n  ln_users      ln_users[]\n  workernames   workernames[]\n}\n",
-  "inlineSchemaHash": "580b6fadfdbe6911a3a301f47a26e02d1519c718fc0c8918e7a598a94c764e4b",
+  "inlineSchema": "generator client {\n  provider      = \"prisma-client\"\n  output        = \"../generated/prisma\"\n  binaryTargets = [\"native\", \"darwin\"]\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel lnurl_auth {\n  k1         String    @id\n  status     String\n  created_at DateTime? @default(now()) @db.Timestamp(6)\n  user_id    BigInt?\n}\n\n/// This table has subclasses and requires additional setup for migrations. Visit https://pris.ly/d/table-inheritance for more info.\n/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.\nmodel worker_stats_raw {\n  worker_id      String\n  timestamp      DateTime @default(now()) @db.Timestamptz(6)\n  avg_hashrate1m BigInt?\n  avg_hashrate5m BigInt?\n  avg_hashrate1h BigInt?\n  avg_hashrate1d BigInt?\n  avg_hashrate7d BigInt?\n  avg_weight     Decimal? @db.Decimal(6, 3)\n  user           String?\n\n  @@index([timestamp(sort: Desc)])\n  @@index([user, worker_id, timestamp(sort: Desc)])\n  @@ignore\n}\n\n/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments\nmodel workernames {\n  workername  String\n  user        BigInt\n  status      String   @default(\"pending\")\n  created_at  DateTime @default(now()) @db.Date\n  btc_address String\n  code        String\n  users       users    @relation(fields: [user], references: [id], onDelete: Cascade, map: \"fk workernames.user\")\n\n  @@id([workername, user, btc_address])\n}\n\nmodel discord_users {\n  id           String @id\n  discord_name String\n  user_id      BigInt\n  users        users  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: \"fk dc_users.users\")\n}\n\nmodel ln_users {\n  id      BigInt  @id(map: \"users_pkey\") @default(autoincrement())\n  ln_key  String?\n  user_id BigInt?\n  users   users?  @relation(fields: [user_id], references: [id], onDelete: Cascade, map: \"ln_users_users_id_fk\")\n}\n\nmodel users {\n  id            BigInt          @id(map: \"users_pkey1\") @default(autoincrement())\n  pseudo        String?\n  created_at    DateTime        @default(now()) @db.Date\n  address       String?\n  discord_users discord_users[]\n  ln_users      ln_users[]\n  workernames   workernames[]\n}\n",
+  "inlineSchemaHash": "8c9274e099c6c502886446db2e336dc7abf9f0c7d4004b8905819ecf10c7d8cf",
   "copyEngine": true,
   "runtimeDataModel": {
     "models": {},
