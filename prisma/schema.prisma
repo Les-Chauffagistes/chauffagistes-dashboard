@@ -33,21 +33,6 @@ model worker_stats_raw {
   @@ignore
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model worker_stats_raw_backup {
-  worker_id      String?
-  timestamp      DateTime? @db.Timestamptz(6)
-  avg_hashrate1m BigInt?
-  avg_hashrate5m BigInt?
-  avg_hashrate1h BigInt?
-  avg_hashrate1d BigInt?
-  avg_hashrate7d BigInt?
-  avg_weight     Decimal?  @db.Decimal(6, 3)
-  user           String?
-
-  @@ignore
-}
-
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model workernames {
   workername  String
