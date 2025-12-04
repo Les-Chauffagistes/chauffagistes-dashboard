@@ -25,7 +25,7 @@ export default function WorkerManager({ user, linkedWorkers,address, setOpen }: 
             <div className="card">
                 <h4 style={{ marginBottom: 10 }}>{greeting(user.pseudo)}</h4>
                 <p style={{ marginBottom: 4 }}>Aucun workername lié, pour le moment...</p>
-                <p style={{ marginBottom: 40 }}>Associez un workername à votre compte pour et définissez votre adresse de paiement</p>
+                <p style={{ marginBottom: 40 }}>Associez un workername à votre compte et définissez votre adresse de paiement</p>
                 <div style={{
                     display: "flex",
                     alignItems: "stretch",
