@@ -13,14 +13,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          cache: npm
+
+      - uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+        
       - name: Inject NEXT_PUBLIC
         run: |
           echo NEXT_PUBLIC_API_URL: https://chauffagistes-pool.fr:3000 > .env
           echo NEXT_PUBLIC_HISTORY_API_URL: http://192.168.1.201:8091 >> .env
           echo NEXT_PUBLIC_BASE_URL: https://stats.chauffagistes-pool.fr >> .env
         
-      - run: npm ci
+      - run: npm ci --prefer-offline
       - run: export DATABASE_URL="postgresql://user:pass@localhost:5432/db"
       - name: prisma generate
         env:
