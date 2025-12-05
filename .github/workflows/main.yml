@@ -18,7 +18,7 @@ jobs:
         run: |
           echo NEXT_PUBLIC_API_URL: https://chauffagistes-pool.fr:3000 > .env
           echo NEXT_PUBLIC_HISTORY_API_URL: http://192.168.1.201:8091 >> .env
-          echo NEXT_PUBLIC_BASE_URL: https://chauffagistes.swakraft.fr >> .env
+          echo NEXT_PUBLIC_BASE_URL: https://stats.chauffagistes-pool.fr >> .env
         
       - run: npm ci
       - run: export DATABASE_URL="postgresql://user:pass@localhost:5432/db"
