@@ -27,7 +27,7 @@ export default function S3({ userAddress, next }: { userAddress: string, next: (
         if (available === null) {
             setMessage({ content: "Choissez un workername", color: "" });
         } else {
-            setMessage({ content: available ? "Ce workername est disponible" : "Ce workername nest pas disponible", color: available ? "green" : "red" });
+            setMessage({ content: available ? "Ce workername est disponible" : "Ce workername n'est pas disponible", color: available ? "green" : "red" });
         }
     }, [available]);
 
