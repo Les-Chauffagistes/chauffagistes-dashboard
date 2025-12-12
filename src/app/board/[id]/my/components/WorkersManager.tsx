@@ -9,8 +9,8 @@ import { Computer, Wallet } from "lucide-react";
 
 
 
-export default function WorkerManager({ user, linkedWorkers,address, setOpen }: { user: usersModel, linkedWorkers: LinkedWorkers[], address: string, setOpen: (open: boolean) => void }) {
-    
+export default function WorkerManager({ user, linkedWorkers, address, setOpen }: { user: usersModel, linkedWorkers: LinkedWorkers[], address: string, setOpen: (open: boolean) => void }) {
+
     if (!user.pseudo) return null // Affiché uniquement quand la config du compte est finie, donc username existe
     if (linkedWorkers === null) {
         return (
@@ -60,7 +60,21 @@ export default function WorkerManager({ user, linkedWorkers,address, setOpen }: 
                     <Computer size={22} />
                     <h4>Workername</h4>
                 </div>
-                <p style={{ marginBottom: 20 }}>{linkedWorkers[0].workername}</p>
+                <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 5,
+                    marginBottom: 20
+                }}>
+                    <p>{linkedWorkers[0].workername}</p>
+                    {linkedWorkers[0].status == "pending" &&
+                    <Link href={`/start/${address}`}  style={{ marginLeft: "auto" }}>
+                        <button className="tertiary">
+                            Terminer l&apos;association
+                        </button>
+                    </Link>
+                    }
+                </div>
 
                 <div style={{
                     display: "flex",
@@ -77,7 +91,7 @@ export default function WorkerManager({ user, linkedWorkers,address, setOpen }: 
                     gap: 10
                 }}>
                     <p className="break">{user.address ?? "Non définie"}</p>
-                    <button onClick={() => setOpen(true)} className="tertiary" style={{marginLeft: "auto"}}>Modifier</button>
+                    <button onClick={() => setOpen(true)} className="tertiary" style={{ marginLeft: "auto" }}>Modifier</button>
                 </div>
             </div>
         )
