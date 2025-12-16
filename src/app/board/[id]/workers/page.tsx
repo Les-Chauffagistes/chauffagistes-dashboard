@@ -4,7 +4,7 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import { Computer, User } from "lucide-react";
+import { Computer, Search, User } from "lucide-react";
 
 import { getBtcBlockReward, getBtcPrice, getPoolWeight, getPoolStats } from "@/app/api";
 
@@ -40,6 +40,7 @@ export default function Home() {
     const [bitcoinPrice, setBitcoinPrice] = useState<number | null>(null);
     const [bitcoinBlockReward, setBitcoinBlockReward] = useState<number | null>(null);
     const [orderBy, setOrderBy] = useState<keyof CleanWorkerHashrate>("weight");
+    const [searchText, setSearchText] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -184,8 +185,6 @@ export default function Home() {
 
     const data = normalizeHashrate(payload);
 
-
-
     return (
         <ThemeProvider theme={theme}>
             <div style={{
@@ -255,33 +254,48 @@ export default function Home() {
                                     "icon": Computer
                                 }
                             ]} />
-                            <div style={{
-                                display: "flex",
-                                justifyContent: "right",
-                                alignItems: "end",
-                                flex: 1,
-                                marginTop: 10,
-                            }}>
-                                <select onChange={orderHandler} style={{
-                                    padding: "5px 10px",
-                                    border: "1px solid var(--card-outline-color)",
-                                    borderRadius: 10,
-                                    backgroundColor: "var(--card-background-color)",
-                                }} defaultValue={"weight"} id="order-by" name="Trier" aria-label="Trier" title="Trier" >
-                                    <optgroup label="Hashrate">
-                                        <option value="hashrate5m">5m</option>
-                                        <option value="hashrate1h">1h</option>
-                                        <option value="hashrate1d">1d</option>
-                                    </optgroup>
-                                    <optgroup label="Shares">
-                                        <option value="shares">Shares</option>
-                                        <option value="bestshare">Best share</option>
-                                    </optgroup>
-                                    <option value="weight"> Poids</option>
-                                </select>
-                            </div>
                         </div>
-                        <WorkerList workers={data} orderBy={orderBy} userAddress={userAddress} btcPrice={bitcoinPrice} isCommunityPool={isCommunityPool} />
+                        <div style={{
+                            display: "flex",
+                            justifyContent: "right",
+                            alignItems: "stretch",
+                            flex: 1,
+                            marginTop: 10,
+                            marginBottom: 10,
+                            gap: 10
+                        }}>
+                            <div style={{position: "relative", flex: 1, display: "flex", alignItems: "center"}}>
+                                <Search style={{position: "absolute", left: 7}} size={18}/>
+                                <input style={{
+                                    flex: 1,
+                                    padding: "10px 15px 10px 30px",
+                                    borderRadius: 10,
+                                    border: "1px solid var(--card-outline-color)",
+                                    backgroundColor: "var(--input-background-color)"
+                                }}
+                                    placeholder="Workername" type="text" id="search-input" onChange={e => setSearchText(e.target.value)}
+                                />
+                            </div>
+                            <select onChange={orderHandler} style={{
+                                padding: "5px 10px",
+                                border: "1px solid var(--card-outline-color)",
+                                borderRadius: 10,
+                                backgroundColor: "var(--card-background-color)",
+                            }} defaultValue={"weight"} id="order-by" name="Trier" aria-label="Trier" title="Trier" >
+                                <optgroup label="Hashrate">
+                                    <option value="hashrate5m">5m</option>
+                                    <option value="hashrate1h">1h</option>
+                                    <option value="hashrate1d">1d</option>
+                                </optgroup>
+                                <optgroup label="Shares">
+                                    <option value="shares">Shares</option>
+                                    <option value="bestshare">Best share</option>
+                                </optgroup>
+                                <option value="weight"> Poids</option>
+                            </select>
+                        </div>
+
+                        <WorkerList workers={data} orderBy={orderBy} searchContent={searchText} userAddress={userAddress} btcPrice={bitcoinPrice} isCommunityPool={isCommunityPool} />
                     </div>
                 }
             </div>
