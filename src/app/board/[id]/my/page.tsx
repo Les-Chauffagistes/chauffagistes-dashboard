@@ -13,6 +13,7 @@ import Popup from "@/app/components/Popup";
 import "./styles.css";
 import WorkerHint from "./components/WorkerHint";
 import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
+import InviteFriends from "./components/InviteFriends";
 
 export default function LoginPage() {
     const [k1, setK1] = useState<string | null>(null);
@@ -84,21 +85,23 @@ export default function LoginPage() {
             return (
                 <>
                     <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
-                        <input ref={addressRef} type="text" defaultValue={user.address ?? ""} />
+                        <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""} />
                     </Popup>
                     <div style={{
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center",
                         alignItems: "center",
                         gap: 10,
                         width: "50%",
                         minWidth: 400,
-                        margin: "0 auto"
+                        margin: "0 auto",
+                        overflow: "auto",
+                        padding: 10
                     }}>
                         <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers ?? []} />
                         {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers ?? []} />}
+                        <InviteFriends userAddress={userAddress} />
                     </div>
                 </>
             )
