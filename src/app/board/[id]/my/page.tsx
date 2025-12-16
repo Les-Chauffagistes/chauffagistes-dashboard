@@ -85,7 +85,7 @@ export default function LoginPage() {
             return (
                 <>
                     <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
-                        <input ref={addressRef} type="text" defaultValue={user.address ?? ""} />
+                        <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""} />
                     </Popup>
                     <div style={{
                         height: "100%",
