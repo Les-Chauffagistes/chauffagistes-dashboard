@@ -91,12 +91,13 @@ export default function LoginPage() {
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        justifyContent: "center",
                         alignItems: "center",
                         gap: 10,
                         width: "50%",
                         minWidth: 400,
-                        margin: "0 auto"
+                        margin: "0 auto",
+                        overflow: "auto",
+                        padding: 10
                     }}>
                         <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers ?? []} />
                         {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers ?? []} />}
