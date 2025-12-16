@@ -13,6 +13,7 @@ import Popup from "@/app/components/Popup";
 import "./styles.css";
 import WorkerHint from "./components/WorkerHint";
 import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
+import InviteFriends from "./components/InviteFriends";
 
 export default function LoginPage() {
     const [k1, setK1] = useState<string | null>(null);
@@ -99,6 +100,7 @@ export default function LoginPage() {
                     }}>
                         <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers ?? []} />
                         {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers ?? []} />}
+                        <InviteFriends userAddress={userAddress} />
                     </div>
                 </>
             )
