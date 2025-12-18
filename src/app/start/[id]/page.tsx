@@ -16,6 +16,7 @@ import S6 from "./steps/S6";
 
 import "./styles.css";
 import PopupLN from "./steps/S1/Popup";
+import NoisyBackground from "@/app/concept/modes/components/NoisyBackground";
 
 
 
@@ -153,17 +154,17 @@ export default function StatPage() {
     return (
         <>
             {/* <Background/> */}
-            <div
-            // className="btc-bg"
-            style={{
-                width: "100%",
-                height: "100dvh",
-                overflow: "auto",
-                flexDirection: "column",
-                display: "flex",
-                backgroundColor: "var(--background)"
-            }}>
-                <h1 id="title">Enregistrer un mineur chez Les Chauffagistes</h1>
+            <NoisyBackground grainIntensity={45} blob1Color="rgba(190, 126, 37, 1)" blob2Color="rgba(207, 110, 61, 1)" blob3Color="rgba(189, 112, 18, 1)" backgroundColor="rgba(52, 37, 26, 1)"
+                // className="btc-bg"
+                style={{
+                    width: "100%",
+                    height: "100dvh",
+                    overflow: "auto",
+                    flexDirection: "column",
+                    display: "flex",
+                    backgroundColor: "var(--background)"
+                }}>
+                <h1 id="start-title">Enregistrer un mineur chez Les Chauffagistes</h1>
 
                 <p id="description" style={{ margin: "20px 0 40px", textAlign: "center" }}>
                     Pour nous permettre de confirmer que le mineur que vous allez connecter vous appartient, vous allez suivre une procédure de connexion.
@@ -215,7 +216,7 @@ export default function StatPage() {
                         );
                     })}
                 </div>
-            </div>
+            </NoisyBackground>
         </>
     );
 }
