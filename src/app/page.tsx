@@ -6,6 +6,8 @@ import { useEffect, useRef, useState } from "react";
 import { addresssExists } from "./api";
 import GoToCommunityPool from "./components/GoToCommunityPool";
 import ThemeBody from "./ThemeBody";
+import GoToBEF from "./components/GoToBEF";
+import Image from "next/image";
 
 
 export default function Home() {
@@ -72,7 +74,17 @@ export default function Home() {
             </button>
           </div>
           <p style={{ margin: 10 }}>Ou</p>
-          <GoToCommunityPool />
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 10,
+            marginBottom: "3rem"
+          }}>
+            <GoToCommunityPool />
+            <GoToBEF />
+            <Image src="/bef.png" alt="BEF Icon" height={64*2} width={119*2}/>
+          </div>
           <p style={{
             marginBottom: "0.1rem"
           }}>Ce n&apos;est pas ce que vous cherchiez ?</p>
@@ -92,15 +104,15 @@ export default function Home() {
               gap: 10,
               paddingRight: 20,
             }}>
-            <img src="/icon-round.png" style={{ width: "100px", height: "100px" }} />
-            <div>
-              <h2 style={{
-                marginBottom: "0.2rem",
-                color: "var(--background)"
-              }}>Présentation générale de la Pool</h2>
-              <p>Indépendant, et Français</p>
-              <p>Solo mining — Mutualisé privé — Mutualisé communautaire</p>
-            </div>
+              <img src="/icon-round.png" style={{ width: "100px", height: "100px" }} />
+              <div>
+                <h2 style={{
+                  marginBottom: "0.2rem",
+                  color: "var(--background)"
+                }}>Présentation générale de la Pool</h2>
+                <p>Indépendant et Français</p>
+                <p>Solo mining — Collaboratif — Pool</p>
+              </div>
             </div>
           </Link>
         </div >
