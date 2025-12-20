@@ -16,7 +16,7 @@ import S6 from "./steps/S6";
 
 import "./styles.css";
 import PopupLN from "./steps/S1/Popup";
-import NoisyBackground from "@/app/concept/modes/components/NoisyBackground";
+import NoisyBackground from "@/app/components/NoisyBackground";
 
 
 
