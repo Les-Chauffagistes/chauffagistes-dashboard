@@ -26,6 +26,12 @@ jobs:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Inject NEXT_PUBLIC
+      run: |
+        echo NEXT_PUBLIC_API_URL: https://chauffagistes-pool.fr:3000 > .env
+        echo NEXT_PUBLIC_HISTORY_API_URL: http://192.168.1.201:8091 >> .env
+        echo NEXT_PUBLIC_BASE_URL: https://stats.chauffagistes-pool.fr >> .env
 
     - name: Build Docker image
       run: |
