@@ -42,3 +42,18 @@ jobs:
       run: |
         docker tag ghcr.io/les-chauffagistes/heatboard:${{ github.sha }} ghcr.io/les-chauffagistes/heatboard:latest
         docker push ghcr.io/les-chauffagistes/heatboard:latest
+    
+    - name: Notify orchestration repo
+      run: |
+        curl -X POST \
+          -H "Authorization: token ${{ secrets.DEPLOY_REPO_TOKEN }}" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/Les-Chauffagistes/heatboard-deploy/dispatches \
+          -d '{
+            "event_type": "image_built",
+            "client_payload": {
+              "service": "heatboard",
+              "image": "ghcr.io/les-chauffagistes/history-server",
+              "tag": "'${GITHUB_SHA}'"
+            }
+          }'
