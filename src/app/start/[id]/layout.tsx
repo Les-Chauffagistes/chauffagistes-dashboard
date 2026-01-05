@@ -3,8 +3,8 @@ import ThemeBody from "@/app/ThemeBody";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Dashboard Chauffagistes",
-  description: "Statistiques détaillée des workers",
+  title: "Pool Chauffagistes",
+  description: "Commencer à miner chez Les Chauffagistes. Procédure pas à pas.",
 };
 
 export default function RootLayout({
