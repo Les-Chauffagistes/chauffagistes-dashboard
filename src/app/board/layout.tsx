@@ -14,8 +14,7 @@ export const metadata: Metadata = {
     "images": [
       `${process.env.NEXT_PUBLIC_BASE_URL}/banner.png`
     ]
-  },
-  themeColor: "#ce8415ff"
+  }
 };
 
 export default function RootLayout({
