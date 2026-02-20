@@ -7,7 +7,7 @@ import { CleanWorkerHashrate } from "../../../../../../models/CleanWorkerHashrat
 
 
 export default function WorkerPopup({ children, userAddress, worker, }: { children: React.ReactNode, userAddress: string, worker: CleanWorkerHashrate }) {
-    const { stats } = useWorkerStats(userAddress, ExtractWorkername.fromPool(worker?.workername ?? ""));
+    const { stats } = useWorkerStats(userAddress, ExtractWorkername.fromPool(worker?.workername ?? "") ?? "Worker sans nom");
 
     return (
         <Dialog.Root>
