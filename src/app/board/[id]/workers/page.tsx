@@ -125,7 +125,9 @@ export default function Home() {
 
     for (const [, worker] of Object.entries(payload)) {
         const workerName = ExtractWorkername.fromPool(worker.workername);
-        worker.weight = Number.parseFloat(weights.find(w => w.worker_id === workerName)?.avg_weight || "0");
+        if (workerName) {
+            worker.weight = Number.parseFloat(weights.find(w => w.worker_id === workerName)?.avg_weight || "0");
+        }
     }
 
     const handleColumnToggle = (column: VisibleColumns) => {
@@ -180,7 +182,7 @@ export default function Home() {
                 base.rewardBtc = bitcoinBlockReward! * (base.weight / 100);
             }
             return base
-        })
+        }).filter(worker => !!ExtractWorkername.fromPool(worker.workername)); // To test
     }
 
     const data = normalizeHashrate(payload);
