@@ -3,7 +3,18 @@ import ThemeBody from "../ThemeBody";
 
 export const metadata: Metadata = {
   title: "Dashboard Chauffagistes",
-  description: "Statistiques détaillée des workers",
+  description: "Statistiques détaillées des machines de minage",
+  openGraph: {
+    "images": [
+      `${process.env.NEXT_PUBLIC_BASE_URL}/banner.png`
+    ]
+  },
+  twitter: {
+    "card": "summary_large_image",
+    "images": [
+      `${process.env.NEXT_PUBLIC_BASE_URL}/banner.png`
+    ]
+  }
 };
 
 export default function RootLayout({

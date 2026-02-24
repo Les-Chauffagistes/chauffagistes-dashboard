@@ -4,20 +4,16 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
-import { AxisValueFormatterContext, YAxis } from "@mui/x-charts";
 import { CircleStar, Flame, SatelliteDish } from "lucide-react";
-import { getAllWorkersHistory, getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
+import { getPoolHistory, getPoolStats, getPoolWeight } from "@/app/api";
 
 import HashrateChart from "./components/HashrateChart";
 import CombinedWidgetCard from "./components/CombinedWidgetCard";
 import ResponsivePieContainer from "./components/ResponsivePieContainer";
 import StatsWidgetBar from "../../components/StatsWidgetBar";
-import CumulatedWorkersLine from "./components/CumulatedWorkersHashrate";
-import StackedStatSelecteor, { OptionsType } from "./components/StackedStatSelector";
 
 import { Weights } from "../../../../../models/API Payloads/Weights";
 import { UserInstantStats } from "../../../../../models/API Payloads/Stats";
-import { AllWorkersHistoryRecord } from "../../../../../models/API Payloads/AllWorkersHistoryRecord";
 import { PoolHistoryRecord } from "../../../../../models/API Payloads/PoolHistoryRecord";
 
 import UnitConverter from "../../../../../lib/UnitConverter";
@@ -36,8 +32,6 @@ export default function Welcome() {
     const [poolStatsHistory, setPoolStatsHistory] = useState<PoolHistoryRecord[] | null>(null);
     const [poolStats, setPoolStats] = useState<UserInstantStats | null>(null);
     const [weights, setWeights] = useState<Weights[]>([]);
-    const [workersHistory, setWorkersHistory] = useState<AllWorkersHistoryRecord[] | null>(null);
-    const [stackedStatName, setStackedStatName] = useState<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">>("avg_hashrate1h");
 
     const isLargeScreen = useMediaQuery("(min-width: 800px)");
     const isCommunityPool = userAddress === COMMUNITY_POOL_ADDRESS;
@@ -50,11 +44,10 @@ export default function Welcome() {
 
         const fetchData = async () => {
             try {
-                const [history, weights, stats, workersHist] = await Promise.all([
+                const [history, weights, stats] = await Promise.all([
                     getPoolHistory(userAddress),
                     getPoolWeight(userAddress),
                     getPoolStats(userAddress),
-                    getAllWorkersHistory(userAddress),
                 ]);
 
                 if (abortController.signal.aborted) return;
@@ -62,7 +55,6 @@ export default function Welcome() {
                 setPoolStatsHistory(history);
                 setWeights(weights);
                 setPoolStats(stats);
-                setWorkersHistory(workersHist);
             } catch (err) {
                 if (!abortController.signal.aborted) {
                     console.error("Erreur lors du chargement des données de pool:", err);
@@ -75,49 +67,12 @@ export default function Welcome() {
         return () => abortController.abort();
     }, [userAddress]);
 
-    if (poolStatsHistory === null || poolStats === null || weights === null || workersHistory == null) {
+    if (poolStatsHistory === null || poolStats === null || weights === null) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>Préchauffage...</div>;
     }
 
-    const statsNames: OptionsType<keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">> = [
-        {
-            "displayName": "Hashrate",
-            "optionName": "avg_hashrate1h"
-        }
-    ]
-    if (isCommunityPool) {
-        statsNames.push({
-            "displayName": "Poids",
-            "optionName": "avg_weight"
-        })
-    }
-
-    function handleStackedStatChange(statName: keyof Omit<AllWorkersHistoryRecord, "worker_id" | "bucket">) {
-        setStackedStatName(statName);
-    }
-    let yAxis: YAxis[]
-    if (stackedStatName == "avg_hashrate1h") {
-        yAxis = [{
-            width: 75,
-            label: "Hashrate (H/s)",
-            valueFormatter: (value: number, context: AxisValueFormatterContext) => {
-                if (context.location === "tick" && context.defaultTickLabel === "") return "";
-                return UnitConverter.fromNumberToString(value, 3);
-            }
-        }]
-
-    } else {
-        yAxis = [{
-            width: 75,
-            label: "Poids (%)",
-            max: 100,
-            valueFormatter: (value: number, context: AxisValueFormatterContext) => {
-                if (context.location === "tick" && context.defaultTickLabel === "") return "";
-                return value.toFixed(0) + "%";
-            }
-        }]
-
-    }
+    
+    
 
 
     return (
@@ -188,20 +143,6 @@ export default function Welcome() {
                     <div className="graph" style={{ width: "calc(100% - 20px)", margin: "0 10px 10px", flex: 1 }}>
                         <ResponsivePieContainer weights={weights} isFake={!isCommunityPool}/>
                     </div>
-                }
-                {isLargeScreen ? 
-                    <div className="graph" style={{
-                        margin: "0 10px 10px",
-                        width: "calc(100% - 20px)", // -marges
-                    }}>
-                        <div style={{
-                            margin: '10px auto',
-                        }}>
-                            <StackedStatSelecteor options={statsNames} handler={handleStackedStatChange} />
-                        </div>
-                        <CumulatedWorkersLine workersHistory={workersHistory} statName={stackedStatName} yAxis={yAxis} />
-                    </div>
-                : null
                 }
             </div>
         </ThemeProvider>

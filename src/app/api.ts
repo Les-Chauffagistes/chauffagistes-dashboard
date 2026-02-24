@@ -2,7 +2,6 @@ import { UserInstantStats } from "../../models/API Payloads/Stats";
 import { PoolHistoryRecord } from "../../models/API Payloads/PoolHistoryRecord";
 import { WorkerHistoryRecord } from "../../models/API Payloads/WorkerHistoryRecord";
 import { BitcoinPrice } from "../../models/API Payloads/BitcoinPrice";
-import { AllWorkersHistoryRecord } from "../../models/API Payloads/AllWorkersHistoryRecord";
 import { WorkerLinkCode } from "../../models/API Payloads/WorkerLinkCode";
 import { LinkedWorkers } from "../../models/API Payloads/LinkedWorkers";
 import { usersModel } from "../../generated/prisma/models/users";
@@ -25,8 +24,8 @@ export async function getPoolStats(address: string): Promise<UserInstantStats> {
  * - Si forever: 1 point tous les jours via hypertable
  * @returns WorkerHistoryRecord[]
  */
-export async function getWorkerStatsHistory(userAddress: string, workerName: string, period: "30d" | "forever"): Promise<WorkerHistoryRecord[]> {
-    return await fetch(`/api/${userAddress}/history/worker/${workerName}/${period}`).then((res) => res.json());
+export async function getWorkerStatsHistory(userAddress: string, workerName: string, period: "daily" | "forever"): Promise<WorkerHistoryRecord[]> {
+    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/worker/${workerName}/${period}`).then((res) => res.json());
 }
 
 /**
@@ -35,7 +34,7 @@ export async function getWorkerStatsHistory(userAddress: string, workerName: str
  * @returns PoolHistoryRecord[]
  */
 export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRecord[]> {
-    return await fetch(`/api/${userAddress}/history/pool`).then((res) => res.json());
+    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/pool`).then((res) => res.json());
 }
 
 /**
@@ -44,7 +43,7 @@ export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRe
  * @returns 
  */
 export async function getPoolWeight(userAddress: string) {
-    return await fetch(`/api/${userAddress}/weights`).then((res) => res.json());
+    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/weights`).then((res) => res.json());
 }
 
 /**
@@ -61,15 +60,6 @@ export async function getBtcPrice(): Promise<BitcoinPrice> {
  */
 export async function getBtcBlockReward(): Promise<number> {
     return await fetch(`/api/bitcoin-block-reward`).then((res) => res.json());
-}
-
-/**
- * Historique sur 30j du hashrate 1h et du poids de tous les workers d'un User
- * @param userAddress Adresse sur laquelle effectuer la recherche
- * @returns AllWorkersHistoryRecord[]
- */
-export async function getAllWorkersHistory(userAddress: string): Promise<AllWorkersHistoryRecord[]> {
-    return await fetch(`/api/${userAddress}/history/`).then((res) => res.json());
 }
 
 /**
