@@ -1,6 +1,6 @@
 "use client";
 
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { mutate } from "swr";
 import CreateAccount from "./components/CreateAccount";
 import WorkerManager from "./components/WorkersManager";
@@ -14,6 +14,8 @@ import "./styles.css";
 import WorkerHint from "./components/WorkerHint";
 import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
 import InviteFriends from "./components/InviteFriends";
+import { greeting } from "../../../../../lib/Greeting";
+import Image from "next/image";
 
 export default function LoginPage() {
     const [k1, setK1] = useState<string | null>(null);
@@ -62,46 +64,41 @@ export default function LoginPage() {
         }, 1500);
 
         return () => { if (i) clearInterval(i); };
-    }, [k1, user, userAddress]); // userAddress added to fix build failure. CHECK REQUIRED
-
-    const style: CSSProperties = {
-        margin: "auto",
-        textAlign: "center",
-    }
+    }, [k1, user, userAddress]);
 
     if (isError) {
         if (error.status !== 401) {
-            return <p style={style}>Erreur d&apos;authentification</p>
+            return <p className="profile-loading">Erreur d&apos;authentification</p>
         }
     }
-    if (isLoading) return <p style={style}>Relecture de la blockchain...</p>
+    if (isLoading) return <p className="profile-loading">Relecture de la blockchain...</p>
     if (user) {
         if (user.pseudo && linkedWorkers !== null) {
             function updateAddress() {
                 if (addressRef.current === null) return;
                 patchUser({ address: addressRef.current.value }).then(() => mutate("/api/session"));
             }
-            
+
             return (
                 <>
                     <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
                         <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""} />
                     </Popup>
-                    <div style={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        gap: 10,
-                        width: "50%",
-                        minWidth: 400,
-                        margin: "0 auto",
-                        overflow: "auto",
-                        padding: 10
-                    }}>
-                        <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers ?? []} />
-                        {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers ?? []} />}
-                        <InviteFriends userAddress={userAddress} />
+                    <div className="profile-page">
+                        <div className="profile-header">
+                            <Image src="/brand-icon.png" alt="logo" width={64} height={64} />
+                            <h1>{greeting(user.pseudo)}</h1>
+                            <p>Gérez votre compte et vos miners</p>
+                        </div>
+                        <div className="profile-content">
+                            <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers} />
+                            {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers} />}
+                            <InviteFriends userAddress={userAddress} />
+                            <button className="danger" style={{ margin: "10px auto 0" }} onClick={async () => {
+                                await fetch("/api/session", { method: "DELETE" });
+                                window.location.href = "/";
+                            }}>Déconnexion</button>
+                        </div>
                     </div>
                 </>
             )

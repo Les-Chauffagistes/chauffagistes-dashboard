@@ -10,7 +10,10 @@ export async function GET(req: Request) {
     const sig = searchParams.get("sig");
     const key = searchParams.get("key");
 
-    if (!k1 || !sig || !key) return NextResponse.json({ status: "ERROR" });
+    if (!k1 || !sig || !key) {
+        console.log("[lnurl callback] missing params", { k1: !!k1, sig: !!sig, key: !!key });
+        return NextResponse.json({ status: "ERROR" });
+    }
 
     const k1Bytes = Buffer.from(k1, "hex");
     const sigDER = Buffer.from(sig, "hex");
@@ -18,10 +21,16 @@ export async function GET(req: Request) {
 
     const pub = secp.keyFromPublic(keyBuffer, "hex");
     const ok = pub.verify(k1Bytes, sigDER);
-    if (!ok) return NextResponse.json({ status: "ERROR" });
+    if (!ok) {
+        console.log("[lnurl callback] sig verification failed");
+        return NextResponse.json({ status: "ERROR" });
+    }
 
     const auth = await prisma.lnurl_auth.findUnique({ where: { k1 } });
-    if (!auth) return NextResponse.json({ status: "ERROR" });
+    if (!auth) {
+        console.log("[lnurl callback] k1 not found in DB");
+        return NextResponse.json({ status: "ERROR" });
+    }
 
     let userId: bigint;
 
@@ -31,6 +40,7 @@ export async function GET(req: Request) {
 
     if (account) {
         userId = account.user_id!;
+        console.log("[lnurl callback] existing user", userId.toString());
     } else {
         const user = await prisma.users.create({ data: {} });
 
@@ -42,6 +52,7 @@ export async function GET(req: Request) {
         });
 
         userId = user.id;
+        console.log("[lnurl callback] new user created", userId.toString());
     }
 
     await prisma.lnurl_auth.update({
@@ -52,5 +63,6 @@ export async function GET(req: Request) {
         }
     });
 
+    console.log("[lnurl callback] success, status set to done");
     return NextResponse.json({ status: "OK" });
 }

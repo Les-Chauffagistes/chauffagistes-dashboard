@@ -1,7 +1,6 @@
 // /src/app/layout.tsx
 
 import "./globals.css";
-import AuthWrapper from "./authWrapper";
 
 
 
@@ -19,9 +18,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png"></link>
         <link rel="manifest" href="manifest.json" />
       </head>
-      <AuthWrapper>
-        {children}
-      </AuthWrapper>
+      {children}
     </html>
   );
 }

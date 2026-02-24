@@ -210,6 +210,7 @@ export type usersWhereInput = {
   address?: Prisma.StringNullableFilter<"users"> | string | null
   discord_users?: Prisma.Discord_usersListRelationFilter
   ln_users?: Prisma.Ln_usersListRelationFilter
+  password_users?: Prisma.Password_usersListRelationFilter
   workernames?: Prisma.WorkernamesListRelationFilter
 }
 
@@ -220,6 +221,7 @@ export type usersOrderByWithRelationInput = {
   address?: Prisma.SortOrderInput | Prisma.SortOrder
   discord_users?: Prisma.discord_usersOrderByRelationAggregateInput
   ln_users?: Prisma.ln_usersOrderByRelationAggregateInput
+  password_users?: Prisma.password_usersOrderByRelationAggregateInput
   workernames?: Prisma.workernamesOrderByRelationAggregateInput
 }
 
@@ -233,6 +235,7 @@ export type usersWhereUniqueInput = Prisma.AtLeast<{
   address?: Prisma.StringNullableFilter<"users"> | string | null
   discord_users?: Prisma.Discord_usersListRelationFilter
   ln_users?: Prisma.Ln_usersListRelationFilter
+  password_users?: Prisma.Password_usersListRelationFilter
   workernames?: Prisma.WorkernamesListRelationFilter
 }, "id">
 
@@ -265,6 +268,7 @@ export type usersCreateInput = {
   address?: string | null
   discord_users?: Prisma.discord_usersCreateNestedManyWithoutUsersInput
   ln_users?: Prisma.ln_usersCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesCreateNestedManyWithoutUsersInput
 }
 
@@ -275,6 +279,7 @@ export type usersUncheckedCreateInput = {
   address?: string | null
   discord_users?: Prisma.discord_usersUncheckedCreateNestedManyWithoutUsersInput
   ln_users?: Prisma.ln_usersUncheckedCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersUncheckedCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesUncheckedCreateNestedManyWithoutUsersInput
 }
 
@@ -285,6 +290,7 @@ export type usersUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUpdateManyWithoutUsersNestedInput
   ln_users?: Prisma.ln_usersUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUpdateManyWithoutUsersNestedInput
 }
 
@@ -295,6 +301,7 @@ export type usersUncheckedUpdateInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUncheckedUpdateManyWithoutUsersNestedInput
   ln_users?: Prisma.ln_usersUncheckedUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUncheckedUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUncheckedUpdateManyWithoutUsersNestedInput
 }
 
@@ -402,6 +409,20 @@ export type usersUpdateOneWithoutLn_usersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.usersUpdateToOneWithWhereWithoutLn_usersInput, Prisma.usersUpdateWithoutLn_usersInput>, Prisma.usersUncheckedUpdateWithoutLn_usersInput>
 }
 
+export type usersCreateNestedOneWithoutPassword_usersInput = {
+  create?: Prisma.XOR<Prisma.usersCreateWithoutPassword_usersInput, Prisma.usersUncheckedCreateWithoutPassword_usersInput>
+  connectOrCreate?: Prisma.usersCreateOrConnectWithoutPassword_usersInput
+  connect?: Prisma.usersWhereUniqueInput
+}
+
+export type usersUpdateOneRequiredWithoutPassword_usersNestedInput = {
+  create?: Prisma.XOR<Prisma.usersCreateWithoutPassword_usersInput, Prisma.usersUncheckedCreateWithoutPassword_usersInput>
+  connectOrCreate?: Prisma.usersCreateOrConnectWithoutPassword_usersInput
+  upsert?: Prisma.usersUpsertWithoutPassword_usersInput
+  connect?: Prisma.usersWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.usersUpdateToOneWithWhereWithoutPassword_usersInput, Prisma.usersUpdateWithoutPassword_usersInput>, Prisma.usersUncheckedUpdateWithoutPassword_usersInput>
+}
+
 export type usersCreateWithoutWorkernamesInput = {
   id?: bigint | number
   pseudo?: string | null
@@ -409,6 +430,7 @@ export type usersCreateWithoutWorkernamesInput = {
   address?: string | null
   discord_users?: Prisma.discord_usersCreateNestedManyWithoutUsersInput
   ln_users?: Prisma.ln_usersCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersCreateNestedManyWithoutUsersInput
 }
 
 export type usersUncheckedCreateWithoutWorkernamesInput = {
@@ -418,6 +440,7 @@ export type usersUncheckedCreateWithoutWorkernamesInput = {
   address?: string | null
   discord_users?: Prisma.discord_usersUncheckedCreateNestedManyWithoutUsersInput
   ln_users?: Prisma.ln_usersUncheckedCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersUncheckedCreateNestedManyWithoutUsersInput
 }
 
 export type usersCreateOrConnectWithoutWorkernamesInput = {
@@ -443,6 +466,7 @@ export type usersUpdateWithoutWorkernamesInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUpdateManyWithoutUsersNestedInput
   ln_users?: Prisma.ln_usersUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUpdateManyWithoutUsersNestedInput
 }
 
 export type usersUncheckedUpdateWithoutWorkernamesInput = {
@@ -452,6 +476,7 @@ export type usersUncheckedUpdateWithoutWorkernamesInput = {
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUncheckedUpdateManyWithoutUsersNestedInput
   ln_users?: Prisma.ln_usersUncheckedUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUncheckedUpdateManyWithoutUsersNestedInput
 }
 
 export type usersCreateWithoutDiscord_usersInput = {
@@ -460,6 +485,7 @@ export type usersCreateWithoutDiscord_usersInput = {
   created_at?: Date | string
   address?: string | null
   ln_users?: Prisma.ln_usersCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesCreateNestedManyWithoutUsersInput
 }
 
@@ -469,6 +495,7 @@ export type usersUncheckedCreateWithoutDiscord_usersInput = {
   created_at?: Date | string
   address?: string | null
   ln_users?: Prisma.ln_usersUncheckedCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersUncheckedCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesUncheckedCreateNestedManyWithoutUsersInput
 }
 
@@ -494,6 +521,7 @@ export type usersUpdateWithoutDiscord_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ln_users?: Prisma.ln_usersUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUpdateManyWithoutUsersNestedInput
 }
 
@@ -503,6 +531,7 @@ export type usersUncheckedUpdateWithoutDiscord_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   ln_users?: Prisma.ln_usersUncheckedUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUncheckedUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUncheckedUpdateManyWithoutUsersNestedInput
 }
 
@@ -512,6 +541,7 @@ export type usersCreateWithoutLn_usersInput = {
   created_at?: Date | string
   address?: string | null
   discord_users?: Prisma.discord_usersCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesCreateNestedManyWithoutUsersInput
 }
 
@@ -521,6 +551,7 @@ export type usersUncheckedCreateWithoutLn_usersInput = {
   created_at?: Date | string
   address?: string | null
   discord_users?: Prisma.discord_usersUncheckedCreateNestedManyWithoutUsersInput
+  password_users?: Prisma.password_usersUncheckedCreateNestedManyWithoutUsersInput
   workernames?: Prisma.workernamesUncheckedCreateNestedManyWithoutUsersInput
 }
 
@@ -546,6 +577,7 @@ export type usersUpdateWithoutLn_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUpdateManyWithoutUsersNestedInput
 }
 
@@ -555,6 +587,63 @@ export type usersUncheckedUpdateWithoutLn_usersInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   discord_users?: Prisma.discord_usersUncheckedUpdateManyWithoutUsersNestedInput
+  password_users?: Prisma.password_usersUncheckedUpdateManyWithoutUsersNestedInput
+  workernames?: Prisma.workernamesUncheckedUpdateManyWithoutUsersNestedInput
+}
+
+export type usersCreateWithoutPassword_usersInput = {
+  id?: bigint | number
+  pseudo?: string | null
+  created_at?: Date | string
+  address?: string | null
+  discord_users?: Prisma.discord_usersCreateNestedManyWithoutUsersInput
+  ln_users?: Prisma.ln_usersCreateNestedManyWithoutUsersInput
+  workernames?: Prisma.workernamesCreateNestedManyWithoutUsersInput
+}
+
+export type usersUncheckedCreateWithoutPassword_usersInput = {
+  id?: bigint | number
+  pseudo?: string | null
+  created_at?: Date | string
+  address?: string | null
+  discord_users?: Prisma.discord_usersUncheckedCreateNestedManyWithoutUsersInput
+  ln_users?: Prisma.ln_usersUncheckedCreateNestedManyWithoutUsersInput
+  workernames?: Prisma.workernamesUncheckedCreateNestedManyWithoutUsersInput
+}
+
+export type usersCreateOrConnectWithoutPassword_usersInput = {
+  where: Prisma.usersWhereUniqueInput
+  create: Prisma.XOR<Prisma.usersCreateWithoutPassword_usersInput, Prisma.usersUncheckedCreateWithoutPassword_usersInput>
+}
+
+export type usersUpsertWithoutPassword_usersInput = {
+  update: Prisma.XOR<Prisma.usersUpdateWithoutPassword_usersInput, Prisma.usersUncheckedUpdateWithoutPassword_usersInput>
+  create: Prisma.XOR<Prisma.usersCreateWithoutPassword_usersInput, Prisma.usersUncheckedCreateWithoutPassword_usersInput>
+  where?: Prisma.usersWhereInput
+}
+
+export type usersUpdateToOneWithWhereWithoutPassword_usersInput = {
+  where?: Prisma.usersWhereInput
+  data: Prisma.XOR<Prisma.usersUpdateWithoutPassword_usersInput, Prisma.usersUncheckedUpdateWithoutPassword_usersInput>
+}
+
+export type usersUpdateWithoutPassword_usersInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pseudo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discord_users?: Prisma.discord_usersUpdateManyWithoutUsersNestedInput
+  ln_users?: Prisma.ln_usersUpdateManyWithoutUsersNestedInput
+  workernames?: Prisma.workernamesUpdateManyWithoutUsersNestedInput
+}
+
+export type usersUncheckedUpdateWithoutPassword_usersInput = {
+  id?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  pseudo?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  address?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  discord_users?: Prisma.discord_usersUncheckedUpdateManyWithoutUsersNestedInput
+  ln_users?: Prisma.ln_usersUncheckedUpdateManyWithoutUsersNestedInput
   workernames?: Prisma.workernamesUncheckedUpdateManyWithoutUsersNestedInput
 }
 
@@ -566,12 +655,14 @@ export type usersUncheckedUpdateWithoutLn_usersInput = {
 export type UsersCountOutputType = {
   discord_users: number
   ln_users: number
+  password_users: number
   workernames: number
 }
 
 export type UsersCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   discord_users?: boolean | UsersCountOutputTypeCountDiscord_usersArgs
   ln_users?: boolean | UsersCountOutputTypeCountLn_usersArgs
+  password_users?: boolean | UsersCountOutputTypeCountPassword_usersArgs
   workernames?: boolean | UsersCountOutputTypeCountWorkernamesArgs
 }
 
@@ -602,6 +693,13 @@ export type UsersCountOutputTypeCountLn_usersArgs<ExtArgs extends runtime.Types.
 /**
  * UsersCountOutputType without action
  */
+export type UsersCountOutputTypeCountPassword_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.password_usersWhereInput
+}
+
+/**
+ * UsersCountOutputType without action
+ */
 export type UsersCountOutputTypeCountWorkernamesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.workernamesWhereInput
 }
@@ -614,6 +712,7 @@ export type usersSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   address?: boolean
   discord_users?: boolean | Prisma.users$discord_usersArgs<ExtArgs>
   ln_users?: boolean | Prisma.users$ln_usersArgs<ExtArgs>
+  password_users?: boolean | Prisma.users$password_usersArgs<ExtArgs>
   workernames?: boolean | Prisma.users$workernamesArgs<ExtArgs>
   _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["users"]>
@@ -643,6 +742,7 @@ export type usersOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = ru
 export type usersInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   discord_users?: boolean | Prisma.users$discord_usersArgs<ExtArgs>
   ln_users?: boolean | Prisma.users$ln_usersArgs<ExtArgs>
+  password_users?: boolean | Prisma.users$password_usersArgs<ExtArgs>
   workernames?: boolean | Prisma.users$workernamesArgs<ExtArgs>
   _count?: boolean | Prisma.UsersCountOutputTypeDefaultArgs<ExtArgs>
 }
@@ -654,6 +754,7 @@ export type $usersPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   objects: {
     discord_users: Prisma.$discord_usersPayload<ExtArgs>[]
     ln_users: Prisma.$ln_usersPayload<ExtArgs>[]
+    password_users: Prisma.$password_usersPayload<ExtArgs>[]
     workernames: Prisma.$workernamesPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
@@ -1057,6 +1158,7 @@ export interface Prisma__usersClient<T, Null = never, ExtArgs extends runtime.Ty
   readonly [Symbol.toStringTag]: "PrismaPromise"
   discord_users<T extends Prisma.users$discord_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$discord_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$discord_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   ln_users<T extends Prisma.users$ln_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$ln_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ln_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  password_users<T extends Prisma.users$password_usersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$password_usersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$password_usersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   workernames<T extends Prisma.users$workernamesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.users$workernamesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$workernamesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -1524,6 +1626,30 @@ export type users$ln_usersArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.Ln_usersScalarFieldEnum | Prisma.Ln_usersScalarFieldEnum[]
+}
+
+/**
+ * users.password_users
+ */
+export type users$password_usersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the password_users
+   */
+  select?: Prisma.password_usersSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the password_users
+   */
+  omit?: Prisma.password_usersOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.password_usersInclude<ExtArgs> | null
+  where?: Prisma.password_usersWhereInput
+  orderBy?: Prisma.password_usersOrderByWithRelationInput | Prisma.password_usersOrderByWithRelationInput[]
+  cursor?: Prisma.password_usersWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.Password_usersScalarFieldEnum | Prisma.Password_usersScalarFieldEnum[]
 }
 
 /**

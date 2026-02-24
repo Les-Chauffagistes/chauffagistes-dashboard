@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useSession } from "@/app/hooks/useSession";
 import "./desktopNavbar.css"
-import { signOut } from "next-auth/react";
 
 
 export function DesktopNavbar() {
     const path = usePathname();
+    const { user } = useSession();
     return (
         <div id="desktop-navbar" style={{
             display: "flex",
@@ -33,14 +34,16 @@ export function DesktopNavbar() {
                 </div>
             </Link>
 
-            <button style={{ marginLeft: "auto" }} className="tertiary" onClick={() => {
-                signOut()
-                fetch("/api/session", { method: "DELETE" })
-            }}>
-                <div>
-                    Déconnexion
-                </div>
-            </button>
+            {user && (
+                <button style={{ marginLeft: "auto" }} className="tertiary" onClick={async () => {
+                    await fetch("/api/session", { method: "DELETE" });
+                    window.location.href = "/";
+                }}>
+                    <div>
+                        Déconnexion
+                    </div>
+                </button>
+            )}
 
         </div>
     )

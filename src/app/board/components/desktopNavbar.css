@@ -9,6 +9,7 @@
 
 .des-nav-active {
     background-color: var(--desktop-navbar-active-color);
+    color: var(--desktop-navbar-active-text-color);
 }
 
 @media screen and (max-width: 800px) {
