@@ -88,7 +88,7 @@ export default function LoginPage() {
                         <div className="profile-header">
                             <Image src="/brand-icon.png" alt="logo" width={64} height={64} />
                             <h1>{greeting(user.pseudo)}</h1>
-                            <p>Gérez votre compte et vos miners</p>
+                            <p>Gérez votre compte et vos mineurs</p>
                         </div>
                         <div className="profile-content">
                             <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers} />
