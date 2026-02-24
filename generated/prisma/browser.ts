@@ -38,6 +38,11 @@ export type discord_users = Prisma.discord_usersModel
  */
 export type ln_users = Prisma.ln_usersModel
 /**
+ * Model password_users
+ * 
+ */
+export type password_users = Prisma.password_usersModel
+/**
  * Model users
  * 
  */

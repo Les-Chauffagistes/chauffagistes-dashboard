@@ -1,21 +1,41 @@
 import { prisma } from "@/server/Prisma";
-import { getIronSession } from "iron-session";
+import { getIronSession, IronSession } from "iron-session";
 import { cookies } from "next/headers";
+
+interface SessionData {
+    userId?: number;
+}
 
 export const sessionOptions = {
     password: process.env.SESSION_PASSWORD!,
-    cookieName: "lightning",
+    cookieName: "heatboard-session",
     cookieOptions: {
+        domain: process.env.COOKIE_DOMAIN ?? ".chauffagistes-btc.fr",
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax" as const,
         secure: true,
     },
 };
 
-export async function getLightningSession() {
-    const session = await getIronSession<{user: {id: string} | null}>(await cookies(), sessionOptions);
-    console.log("ln session", {session});
-    if (!session.user) {
-        return null
-    }
-    const user = await prisma.users.findFirst({where: {id: Number.parseInt(session.user.id)}})
-    return user
+async function getIronSessionData(): Promise<IronSession<SessionData>> {
+    return getIronSession<SessionData>(await cookies(), sessionOptions);
+}
+
+export async function getSession() {
+    const session = await getIronSessionData();
+    if (!session.userId) return null;
+    const user = await prisma.users.findUnique({ where: { id: session.userId } });
+    return user;
+}
+
+export async function createSession(userId: number) {
+    const session = await getIronSessionData();
+    session.userId = userId;
+    await session.save();
+}
+
+export async function destroySession() {
+    const session = await getIronSessionData();
+    session.destroy();
 }

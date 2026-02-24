@@ -2,7 +2,6 @@
 
 import { getLinkedWorkers, getUserToken, registerWorkername } from "@/app/api";
 import { useSession } from "@/app/hooks/useSession";
-import { useSession as discordSession } from "next-auth/react"
 import { usePathname } from "next/navigation";
 import { CSSProperties, useEffect, useState } from "react";
 import { mutate } from "swr";
@@ -27,7 +26,6 @@ export default function StatPage() {
 
     const { user, isLoading } = useSession();
     const [userToken, setUserToken] = useState<string | null>(null);
-    const discord = discordSession();
 
     const [lnurl, setLnurl] = useState<string | null>(null);
     const [k1, setK1] = useState<string | null>(null);
@@ -101,7 +99,7 @@ export default function StatPage() {
     }, [k1, user, userAddress]); // userAddress added to fix build failure. CHECK REQUIRED
 
 
-    if (isLoading || discord.status === "loading") {
+    if (isLoading) {
         return <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100dvh" }}>Préchauffage...</div>;
     }
 

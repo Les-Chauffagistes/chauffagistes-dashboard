@@ -1,99 +1,59 @@
 "use client";
 
-import "./workersManager.css";
-import { greeting } from "../../../../../../lib/Greeting";
 import { LinkedWorkers } from "../../../../../../models/API Payloads/LinkedWorkers";
 import Link from "next/link";
 import { usersModel } from "../../../../../../generated/prisma/models";
 import { Computer, Wallet } from "lucide-react";
 
-
-
 export default function WorkerManager({ user, linkedWorkers, address, setOpen }: { user: usersModel, linkedWorkers: LinkedWorkers[], address: string, setOpen: (open: boolean) => void }) {
 
-    if (!user.pseudo) return null // Affiché uniquement quand la config du compte est finie, donc username existe
-    if (linkedWorkers === null) {
+    if (!user.pseudo) return null;
+
+    if (linkedWorkers.length === 0) {
         return (
-            <div className="card" style={{ margin: "auto", height: "fit-content" }}>
-                <h4>{greeting(user.pseudo)}</h4>
-                <p>Chargement...</p>
-            </div>
-        )
-    }
-    else if (linkedWorkers.length === 0) {
-        return (
-            <div className="card">
-                <h4 style={{ marginBottom: 10 }}>{greeting(user.pseudo)}</h4>
-                <p style={{ marginBottom: 4 }}>Aucun workername lié, pour le moment...</p>
-                <p style={{ marginBottom: 40 }}>Associez un workername à votre compte et définissez votre adresse de paiement</p>
-                <div style={{
-                    display: "flex",
-                    alignItems: "stretch",
-                    gap: 10,
-                    justifyContent: "center"
-                }}>
+            <div className="profile-section">
+                <div className="profile-empty">
+                    <p>Aucun workername pour le moment. Associez un mineur et définissez votre adresse de paiement.</p>
                     <Link href={`/start/${address}`}>
-                        <button className="primary">
-                            <div>
-                                <h2>
-                                    Commencer
-                                </h2>
-                                <p>Réservez, validez, enregistrez !</p>
-                            </div>
-                        </button>
+                        <button className="primary">Commencer</button>
                     </Link>
                 </div>
             </div>
-        )
+        );
     }
 
-    else {
-        return (
-            <div className="card" style={{ width: "100%" }}>
-                <h2 style={{ margin: "auto 30px 30px 30px", textAlign: "center" }}>{greeting(user.pseudo)}</h2>
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    marginBottom: 10
-                }}>
-                    <Computer size={22} />
-                    <h4>Workername</h4>
+    return (
+        <>
+            <div className="profile-section">
+                <div className="profile-section-header">
+                    <div className="profile-section-icon"><Computer size={18} /></div>
+                    <h3>Workername</h3>
                 </div>
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    marginBottom: 20
-                }}>
-                    <p>{linkedWorkers[0].workername}</p>
-                    {linkedWorkers[0].status == "pending" &&
-                    <Link href={`/start/${address}`}  style={{ marginLeft: "auto" }}>
-                        <button className="tertiary">
-                            Terminer l&apos;association
-                        </button>
-                    </Link>
+                <div className="profile-row">
+                    <span className="profile-row-label">Nom</span>
+                    <span className="profile-row-value">{linkedWorkers[0].workername}</span>
+                    {linkedWorkers[0].status === "pending" &&
+                        <span className="profile-row-action">
+                            <Link href={`/start/${address}`}>
+                                <button className="tertiary">Terminer</button>
+                            </Link>
+                        </span>
                     }
                 </div>
+            </div>
 
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 5,
-                    marginBottom: 10
-                }}>
-                    <Wallet size={22} />
-                    <h4>Adresse de réception</h4>
+            <div className="profile-section">
+                <div className="profile-section-header">
+                    <div className="profile-section-icon"><Wallet size={18} /></div>
+                    <h3>Adresse de réception</h3>
                 </div>
-                <div style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10
-                }}>
-                    <p className="break">{user.address ?? "Non définie"}</p>
-                    <button onClick={() => setOpen(true)} className="tertiary" style={{ marginLeft: "auto" }}>Modifier</button>
+                <div className="profile-row">
+                    <span className="profile-row-value break">{user.address ?? "Non définie"}</span>
+                    <span className="profile-row-action">
+                        <button onClick={() => setOpen(true)} className="tertiary">Modifier</button>
+                    </span>
                 </div>
             </div>
-        )
-    }
+        </>
+    );
 }
