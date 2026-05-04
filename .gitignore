@@ -42,3 +42,6 @@ next-env.d.ts
 
 sonar-project.properties
 generated/prisma/internal
+
+docker-compose.yml
+nginx.conf
