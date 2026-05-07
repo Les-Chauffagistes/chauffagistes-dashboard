@@ -10,6 +10,8 @@ export async function GET(req: Request) {
     const sig = searchParams.get("sig");
     const key = searchParams.get("key");
 
+    console.log(k1);
+
     if (!k1 || !sig || !key) {
         console.log("[lnurl callback] missing params", { k1: !!k1, sig: !!sig, key: !!key });
         return NextResponse.json({ status: "ERROR" });
@@ -22,13 +24,13 @@ export async function GET(req: Request) {
     const pub = secp.keyFromPublic(keyBuffer, "hex");
     const ok = pub.verify(k1Bytes, sigDER);
     if (!ok) {
-        console.log("[lnurl callback] sig verification failed");
+        console.log("[lnurl callback] Error: sig verification failed");
         return NextResponse.json({ status: "ERROR" });
     }
 
     const auth = await prisma.lnurl_auth.findUnique({ where: { k1 } });
     if (!auth) {
-        console.log("[lnurl callback] k1 not found in DB");
+        console.log("[lnurl callback] Error: k1 not found in DB");
         return NextResponse.json({ status: "ERROR" });
     }
 
@@ -40,7 +42,7 @@ export async function GET(req: Request) {
 
     if (account) {
         userId = account.user_id!;
-        console.log("[lnurl callback] existing user", userId.toString());
+        console.log("[lnurl callback] Success: existing user", userId.toString());
     } else {
         const user = await prisma.users.create({ data: {} });
 
@@ -52,7 +54,7 @@ export async function GET(req: Request) {
         });
 
         userId = user.id;
-        console.log("[lnurl callback] new user created", userId.toString());
+        console.log("[lnurl callback] Success: new user created", userId.toString());
     }
 
     await prisma.lnurl_auth.update({
