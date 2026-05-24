@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/server/Prisma";
 import { createSession } from "@/app/api/lib/session";
+import { env } from "@/server/env";
 
 export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
@@ -76,5 +77,5 @@ export async function GET(req: Request) {
 
     await createSession(Number(user.id));
 
-    return NextResponse.redirect(new URL(state, process.env.NEXT_PUBLIC_BASE_URL));
+    return NextResponse.redirect(new URL(state, env.baseUrl));
 }

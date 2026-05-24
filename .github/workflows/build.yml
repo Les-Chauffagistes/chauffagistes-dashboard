@@ -12,11 +12,6 @@ jobs:
     with:
       service-name: heatboard
       build-target: runner
-      build-args: |
-        NEXT_PUBLIC_BASE_URL=https://heatboard.staging.chauffagistes-btc.fr
-        NEXT_PUBLIC_API_URL=https://chauffagistes-pool.fr:3000
-        NEXT_PUBLIC_HISTORY_API_URL=https://history.staging.chauffagistes-btc.fr
-        NEXT_PUBLIC_BITCOIN_API_URL=https://bitcoin.staging.chauffagistes-btc.fr
     secrets: inherit
 
   build-migrator:

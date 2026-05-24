@@ -5,6 +5,7 @@ import { BitcoinPrice } from "../../models/API Payloads/BitcoinPrice";
 import { WorkerLinkCode } from "../../models/API Payloads/WorkerLinkCode";
 import { LinkedWorkers } from "../../models/API Payloads/LinkedWorkers";
 import { usersModel } from "../../generated/prisma/models/users";
+import { config } from "@/lib/config";
 
 /**
  * Statistiques instantanées d'un User
@@ -12,7 +13,7 @@ import { usersModel } from "../../generated/prisma/models/users";
  * @returns Détails généraux du user et de tous les workers
  */
 export async function getPoolStats(address: string): Promise<UserInstantStats> {
-    return await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/stats/${address}`).then((res) => res.json());
+    return await fetch(`${config.API_URL}/api/stats/${address}`).then((res) => res.json());
 }
 
 /**
@@ -25,7 +26,7 @@ export async function getPoolStats(address: string): Promise<UserInstantStats> {
  * @returns WorkerHistoryRecord[]
  */
 export async function getWorkerStatsHistory(userAddress: string, workerName: string, period: "daily" | "forever"): Promise<WorkerHistoryRecord[]> {
-    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/worker/${workerName}/${period}`).then((res) => res.json());
+    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/worker/${workerName}/${period}`).then((res) => res.json());
 }
 
 /**
@@ -34,7 +35,7 @@ export async function getWorkerStatsHistory(userAddress: string, workerName: str
  * @returns PoolHistoryRecord[]
  */
 export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRecord[]> {
-    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/pool`).then((res) => res.json());
+    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/pool`).then((res) => res.json());
 }
 
 /**
@@ -43,7 +44,7 @@ export async function getPoolHistory(userAddress: string): Promise<PoolHistoryRe
  * @returns 
  */
 export async function getPoolWeight(userAddress: string) {
-    return await fetch(`${process.env.NEXT_PUBLIC_HISTORY_API_URL}/v1/${userAddress}/weights`).then((res) => res.json());
+    return await fetch(`${config.HISTORY_API_URL}/v1/${userAddress}/weights`).then((res) => res.json());
 }
 
 /**
@@ -51,7 +52,7 @@ export async function getPoolWeight(userAddress: string) {
  * @returns BitcoinPrice
  */
 export async function getBtcPrice(): Promise<BitcoinPrice> {
-    return await fetch(`${process.env.NEXT_PUBLIC_BITCOIN_API_URL}/v1/bitcoin-price`).then((res) => res.json());
+    return await fetch(`${config.BITCOIN_API_URL}/v1/bitcoin-price`).then((res) => res.json());
 }
 
 /**
@@ -59,7 +60,7 @@ export async function getBtcPrice(): Promise<BitcoinPrice> {
  * @returns number
  */
 export async function getBtcBlockReward(): Promise<number> {
-    return await fetch(`${process.env.NEXT_PUBLIC_BITCOIN_API_URL}/v1/bitcoin-block-reward`).then((res) => res.json());
+    return await fetch(`${config.BITCOIN_API_URL}/v1/bitcoin-block-reward`).then((res) => res.json());
 }
 
 /**

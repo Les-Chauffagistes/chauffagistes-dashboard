@@ -2,15 +2,14 @@ import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { bech32m, bech32 } from "@scure/base";
 import { prisma } from "@/server/Prisma";
-
-const BASE = process.env.NEXT_PUBLIC_BASE_URL;
+import { env } from "@/server/env";
 
 export async function GET() {
     const k1 = crypto.randomBytes(32).toString("hex");
 
     await prisma.lnurl_auth.create({ data: { k1, status: "pending"} });
 
-    const callback = `${BASE}/api/auth/lnurl/callback?k1=${k1}&tag=login`;
+    const callback = `${env.baseUrl}/api/auth/lnurl/callback?k1=${k1}&tag=login`;
     // console.debug("callback:", callback)
     const lnurl = bech32encode(callback);
 
