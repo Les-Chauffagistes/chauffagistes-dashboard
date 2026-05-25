@@ -1,7 +1,15 @@
 #!/bin/sh
 set -e
 
+
+# Injection des secrets
+DB_PASS=$(cat /run/secrets/db_password)
+export PGPASSWORD="${DB_PASS}"
 export DATABASE_URL=postgresql://${DB_USER}:$(cat /run/secrets/db_password)@${DB_HOST}:5432/${DB_NAME}
+export POOL_TOKEN=$(cat /run/secrets/pool_token)
+export SESSION_PASSWORD=$(cat /run/secrets/session_password)
+export DISCORD_CLIENT_SECRET=$(cat /run/secrets/discord_client_secret)
+export NEXTAUTH_SECRET=$(cat /run/secrets/nextauth_secret)
 
 cat > public/config.js << CONF
 window.__CONFIG__ = {
