@@ -5,7 +5,7 @@ set -e
 # Injection des secrets
 DB_PASS=$(cat /run/secrets/heatboard_staging_db_password)
 export PGPASSWORD="${DB_PASS}"
-export DATABASE_URL="postgresql://postgres:${DB_PASS}@${DB_HOST}:5432/${DB_NAME}"
+export DATABASE_URL="postgresql://postgres:${DB_PASS}@${PGHOST}:${PGPORT:-5432}/${PGDATABASE}"
 export POOL_TOKEN=$(cat /run/secrets/heatboard_staging_pool_token)
 export SESSION_PASSWORD=$(cat /run/secrets/heatboard_staging_session_password)
 export DISCORD_CLIENT_SECRET=$(cat /run/secrets/heatboard_staging_discord_client_secret)
