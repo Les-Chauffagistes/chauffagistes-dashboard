@@ -3,18 +3,35 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
-ENV DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
-ENV NEXT_PUBLIC_API_URL="https://chauffagistes-pool.fr:3000"
-ENV NEXT_PUBLIC_HISTORY_API_URL="http://192.168.1.201:8091"
-ENV NEXT_PUBLIC_BASE_URL="https://stats.chauffagistes-pool.fr"
-RUN npx prisma generate
 
-ARG SESSION_PASSWORD="1234"
+# Variables figées au moment du build (NEXT_PUBLIC_*)
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_HISTORY_API_URL
+ARG NEXT_PUBLIC_BASE_URL
+ARG NEXT_PUBLIC_BITCOIN_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_HISTORY_API_URL=$NEXT_PUBLIC_HISTORY_API_URL
+ENV NEXT_PUBLIC_BASE_URL=$NEXT_PUBLIC_BASE_URL
+ENV NEXT_PUBLIC_BITCOIN_API_URL=$NEXT_PUBLIC_BITCOIN_API_URL
+
+ARG DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+ARG SESSION_PASSWORD=0000000000000000000000000000000000000000000000000000000000000000
+ENV DATABASE_URL=$DATABASE_URL
+ENV SESSION_PASSWORD=$SESSION_PASSWORD
+RUN npx prisma generate
 RUN npm run build
+ENV DATABASE_URL=
+ENV SESSION_PASSWORD=
 
 FROM node:22-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-COPY --from=build /app ./
-EXPOSE 3000
-CMD ["npm", "start"]
+ENV PORT=3002
+
+COPY --from=build /app/public ./public
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/generated ./generated
+EXPOSE 3002
+
+CMD ["node", "server.js"]

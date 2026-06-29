@@ -61,7 +61,7 @@ export default function Login({ userAddress, setOpen }: Readonly<{ userAddress: 
     return (
         <div className="login-container">
             <div className="login-header">
-                <Image src="/brand-icon.png" alt="Logo" width={50} height={50} />
+                <Image src="/brand-icon.png" alt="Logo" width={50} height={50} quality={100}/>
                 <h1>Rejoignez <span>Chauffagistes</span></h1>
                 <p>Connectez-vous pour gérer vos workers et suivre vos stats</p>
             </div>

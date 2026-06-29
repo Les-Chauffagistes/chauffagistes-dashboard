@@ -48,14 +48,14 @@ export default function Home() {
           flex: "1 0 auto"
         }}>
 
-
+          <Image src="/brand-icon.png" alt="Logo" height={128} width={128} quality={100}/>
           <h1 style={{
             fontWeight: 800,
             margin: "30px 0 30px"
-          }}>Statistiques - Pool Chauffagistes</h1>
+          }}>Heatboard - Pool Chauffagistes</h1>
           <p style={{
             marginBottom: "5rem"
-          }}>Vous êtes sur la page d&apos;accueil du dashboard de statistiques des Chauffagistes. Consultez les statistiques de votre user et de tous les workers connectés.</p>
+          }}>Bienvenue sur le Heatboard ! Consultez les statistiques de n&apos;importe quelle pool de minage Chauffagistes et des workers connectés.</p>
           <div style={{
             display: "flex",
             justifyContent: "center",

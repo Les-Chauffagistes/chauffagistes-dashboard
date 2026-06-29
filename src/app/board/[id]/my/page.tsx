@@ -86,7 +86,7 @@ export default function LoginPage() {
                     </Popup>
                     <div className="profile-page">
                         <div className="profile-header">
-                            <Image src="/brand-icon.png" alt="logo" width={64} height={64} />
+                            <Image src="/brand-icon.png" alt="logo" width={64} height={64} quality={100}/>
                             <h1>{greeting(user.pseudo)}</h1>
                             <p>Gérez votre compte et vos mineurs</p>
                         </div>

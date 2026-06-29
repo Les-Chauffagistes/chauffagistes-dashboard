@@ -51,7 +51,7 @@ export async function getPoolWeight(userAddress: string) {
  * @returns BitcoinPrice
  */
 export async function getBtcPrice(): Promise<BitcoinPrice> {
-    return await fetch(`/api/bitcoin-price`).then((res) => res.json());
+    return await fetch(`${process.env.NEXT_PUBLIC_BITCOIN_API_URL}/v1/bitcoin-price`).then((res) => res.json());
 }
 
 /**
@@ -59,7 +59,7 @@ export async function getBtcPrice(): Promise<BitcoinPrice> {
  * @returns number
  */
 export async function getBtcBlockReward(): Promise<number> {
-    return await fetch(`/api/bitcoin-block-reward`).then((res) => res.json());
+    return await fetch(`${process.env.NEXT_PUBLIC_BITCOIN_API_URL}/v1/bitcoin-block-reward`).then((res) => res.json());
 }
 
 /**
