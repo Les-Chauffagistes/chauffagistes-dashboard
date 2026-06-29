@@ -4,7 +4,6 @@ import { WorkerHistoryRecord } from "../../models/API Payloads/WorkerHistoryReco
 import { BitcoinPrice } from "../../models/API Payloads/BitcoinPrice";
 import { WorkerLinkCode } from "../../models/API Payloads/WorkerLinkCode";
 import { LinkedWorkers } from "../../models/API Payloads/LinkedWorkers";
-import { usersModel } from "../../generated/prisma/models/users";
 import { config } from "@/lib/config";
 
 /**
@@ -104,6 +103,6 @@ export async function getUserToken(): Promise<string> {
     return (await fetch("/api/user/token").then((res) => res.json())).token
 }
 
-export async function patchUser(data: Omit<Partial<usersModel>, "id">) {
+export async function patchUser(data: { address?: string }) {
     return (await fetch("/api/user", { method: "PATCH", body: JSON.stringify(data) }).then((res) => res.json()))
 }

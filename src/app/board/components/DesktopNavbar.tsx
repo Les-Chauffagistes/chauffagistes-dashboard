@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "@/app/hooks/useSession";
+import { logOut } from "@/lib/auth";
 import "./desktopNavbar.css"
 
 
@@ -36,7 +37,7 @@ export function DesktopNavbar() {
 
             {user && (
                 <button style={{ marginLeft: "auto" }} className="tertiary" onClick={async () => {
-                    await fetch("/api/session", { method: "DELETE" });
+                    await logOut();
                     window.location.href = "/";
                 }}>
                     <div>
