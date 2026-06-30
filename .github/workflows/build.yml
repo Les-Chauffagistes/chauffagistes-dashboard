@@ -2,8 +2,8 @@ name: Build app
 
 on:
   push:
-    branches: ["**"]
-    tags: ["v*.*.*"]
+    branches: [ "**" ]
+    tags: [ "v*.*.*" ]
   pull_request:
   workflow_dispatch:
 
