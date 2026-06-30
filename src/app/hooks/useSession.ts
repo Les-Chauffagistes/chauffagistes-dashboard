@@ -6,7 +6,7 @@ export type SessionUser = { id: string, pseudo: string, address: string | null }
 
 export function useSession() {
   const lastUser = useRef<SessionUser | null>(null);
-  const { data, error, isLoading } = useSWR<SessionUser | null>(
+  const { data, error, isLoading, mutate } = useSWR<SessionUser | null>(
     "/api/user",
     async (url) => {
       const baseUser = await getMe();
@@ -30,5 +30,6 @@ export function useSession() {
     isLoading,
     isError: !!error,
     error,
+    mutate,
   };
 }

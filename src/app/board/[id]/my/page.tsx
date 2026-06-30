@@ -16,7 +16,7 @@ import { useSession } from "@/app/hooks/useSession";
 import "./styles.css";
 
 export default function LoginPage() {
-    const {user, isLoading} = useSession();
+    const {user, isLoading, mutate} = useSession();
     const [open, setOpen] = useState(false);
     const addressRef = useRef<HTMLInputElement>(null);
     const [linkedWorkers, setLinkedWorkers] = useState<LinkedWorkers[] | null>(null);
@@ -33,9 +33,11 @@ export default function LoginPage() {
 
     if (user) {
         if (linkedWorkers === null) return <p className="profile-loading">Relecture de la blockchain...</p>;
-        function updateAddress() {
+        async function updateAddress() {
             if (addressRef.current === null) return;
-            patchUser({address: addressRef.current.value});
+            const newAddress = addressRef.current.value;
+            await patchUser({address: newAddress});
+            mutate(user ? {...user, address: newAddress} : null, false);
         }
 
         return (

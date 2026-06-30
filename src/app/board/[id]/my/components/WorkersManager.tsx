@@ -5,7 +5,12 @@ import Link from "next/link";
 import { SessionUser } from "@/app/hooks/useSession";
 import { Computer, Wallet } from "lucide-react";
 
-export default function WorkerManager({ user, linkedWorkers, address, setOpen }: { user: SessionUser, linkedWorkers: LinkedWorkers[], address: string, setOpen: (open: boolean) => void }) {
+export default function WorkerManager({ user, linkedWorkers, address, setOpen }: Readonly<{
+    user: SessionUser,
+    linkedWorkers: LinkedWorkers[],
+    address: string,
+    setOpen: (open: boolean) => void
+}>) {
 
     if (!user.pseudo) return null;
 
