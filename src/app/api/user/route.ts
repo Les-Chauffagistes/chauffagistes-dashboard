@@ -9,10 +9,11 @@ export async function GET() {
         const baseUser = await getMe(await getServerCookieHeader());
         if (!baseUser) return NextResponse.json(null, { status: 401 });
 
-        let heatboardUser = await prisma.user.findFirst({ where: { id: baseUser.user_id } });
-        if (!heatboardUser) {
-            heatboardUser = await prisma.user.create({ data: { id: baseUser.user_id } });
-        }
+        const heatboardUser = await prisma.user.upsert({
+            where: { id: baseUser.user_id },
+            create: { id: baseUser.user_id },
+            update: {},
+        });
 
         return NextResponse.json({ id: heatboardUser.id, address: heatboardUser.address, pseudo: baseUser.pseudo });
     } catch (e) {

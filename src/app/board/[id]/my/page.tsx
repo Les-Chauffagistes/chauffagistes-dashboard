@@ -1,18 +1,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import WorkerManager from "./components/WorkersManager";
 import { usePathname } from "next/navigation";
+import WorkerManager from "./components/WorkersManager";
+import InviteFriends from "./components/InviteFriends";
 import { getLinkedWorkers, patchUser } from "@/app/api";
 import Popup from "@/app/components/Popup";
-import "./styles.css";
 import WorkerHint from "./components/WorkerHint";
-import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
-import InviteFriends from "./components/InviteFriends";
-import { greeting } from "../../../../lib/Greeting";
-import Image from "next/image";
+import { LinkedWorkers } from "@/../models/API Payloads/LinkedWorkers";
+import { greeting } from "@/lib/Greeting";
 import { config } from "@/lib/config";
 import { logOut } from "@/lib/auth";
+import Image from "next/image";
+import "./styles.css";
 
 
 type User = { id: string, pseudo: string, address: string | null }
@@ -44,12 +44,12 @@ export default function LoginPage() {
     }, [user, userAddress]);
 
 
-    if (user === null) return <p className="profile-loading">Relecture de la blockchain...</p>
+    if (user === null) return <p className="profile-loading">Relecture de la blockchain...</p>;
     if (user) {
         if (user.pseudo && linkedWorkers !== null) {
             function updateAddress() {
                 if (addressRef.current === null) return;
-                patchUser({ address: addressRef.current.value });
+                patchUser({address: addressRef.current.value});
             }
 
             return (
@@ -68,16 +68,16 @@ export default function LoginPage() {
                                            linkedWorkers={linkedWorkers}/>
                             {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers}/>}
                             <InviteFriends userAddress={userAddress}/>
-                            <button className="danger" style={{ margin: "10px auto 0" }} onClick={async () => {
-                                await logOut()
+                            <button className="danger" style={{margin: "10px auto 0"}} onClick={async () => {
+                                await logOut();
                             }}>Déconnexion
                             </button>
                         </div>
                     </div>
                 </>
-            )
+            );
         }
     }
 
-    return <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}>Se connecter</a>
+    return <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}>Se connecter</a>;
 }
