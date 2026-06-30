@@ -9,8 +9,10 @@ export async function GET() {
         const baseUser = await getMe(await getServerCookieHeader());
         if (!baseUser) return NextResponse.json(null, { status: 401 });
 
-        let heatboardUser = await prisma.users.findFirst({ where: { id: baseUser.user_id } });
-        heatboardUser ??= await prisma.users.create({data: {id: baseUser.user_id}});
+        let heatboardUser = await prisma.user.findFirst({ where: { id: baseUser.user_id } });
+        if (!heatboardUser) {
+            heatboardUser = await prisma.user.create({ data: { id: baseUser.user_id } });
+        }
 
         return NextResponse.json({ id: heatboardUser.id, address: heatboardUser.address, pseudo: baseUser.pseudo });
     } catch (e) {
@@ -25,7 +27,7 @@ export async function PATCH(req: Request) {
         const baseUser = await getMe(await getServerCookieHeader());
         if (!baseUser) return NextResponse.json({ error: "Auth required" }, { status: 401 });
 
-        await prisma.users.update({
+        await prisma.user.update({
             where: { id: baseUser.user_id },
             data,
         });
