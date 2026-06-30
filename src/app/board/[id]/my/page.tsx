@@ -14,9 +14,10 @@ import { logOut } from "@/lib/auth";
 import Image from "next/image";
 import { useSession } from "@/app/hooks/useSession";
 import "./styles.css";
+import { isArray } from "node:util";
 
 export default function LoginPage() {
-    const { user, isLoading } = useSession();
+    const {user, isLoading} = useSession();
     const [open, setOpen] = useState(false);
     const addressRef = useRef<HTMLInputElement>(null);
     const [linkedWorkers, setLinkedWorkers] = useState<LinkedWorkers[] | null>(null);
@@ -29,37 +30,51 @@ export default function LoginPage() {
         getLinkedWorkers(userAddress).then(d => setLinkedWorkers(d));
     }, [user, userAddress]);
 
-    if (isLoading || (user && linkedWorkers === null)) return <p className="profile-loading">Relecture de la blockchain...</p>;
+    if (isLoading || user === undefined || (user !== null && linkedWorkers === null)) return <p className="profile-loading">Relecture de la
+        blockchain...</p>;
 
     if (user) {
         function updateAddress() {
             if (addressRef.current === null) return;
-            patchUser({ address: addressRef.current.value });
+            patchUser({address: addressRef.current.value});
         }
 
         return (
             <>
                 <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
-                    <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""} />
+                    <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""}/>
                 </Popup>
                 <div className="profile-page">
                     <div className="profile-header">
-                        <Image src="/brand-icon.png" alt="logo" width={64} height={64} quality={100} />
+                        <Image src="/brand-icon.png" alt="logo" width={64} height={64} quality={100}/>
                         <h1>{greeting(user.pseudo)}</h1>
                         <p>Gérez votre compte et vos mineurs</p>
                     </div>
                     <div className="profile-content">
-                        <WorkerManager user={user} address={userAddress} setOpen={setOpen} linkedWorkers={linkedWorkers!} />
-                        {linkedWorkers!.length > 0 && <WorkerHint linkedWorkers={linkedWorkers!} />}
-                        <InviteFriends userAddress={userAddress} />
-                        <button className="danger" style={{ margin: "10px auto 0" }} onClick={async () => {
+                        <WorkerManager user={user} address={userAddress} setOpen={setOpen}
+                                       linkedWorkers={linkedWorkers}/>
+                        {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers}/>}
+                        <InviteFriends userAddress={userAddress}/>
+                        <button className="danger" style={{margin: "10px auto 0"}} onClick={async () => {
                             await logOut();
-                        }}>Déconnexion</button>
+                            globalThis.location.reload()
+                        }}>Déconnexion
+                        </button>
                     </div>
                 </div>
             </>
         );
     }
 
-    return <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}>Se connecter</a>;
+    return <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        height: "70%",
+        gap: 30
+    }}>
+        <h3>Gérez vos machines de minage et votre adresse de paiement</h3>
+        <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}><button className="primary">Se connecter</button></a>
+    </div>;
 }

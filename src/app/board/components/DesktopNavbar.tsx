@@ -38,7 +38,7 @@ export function DesktopNavbar() {
             {user && (
                 <button style={{ marginLeft: "auto" }} className="tertiary" onClick={async () => {
                     await logOut();
-                    window.location.href = "/";
+                    globalThis.location.reload()
                 }}>
                     <div>
                         Déconnexion
