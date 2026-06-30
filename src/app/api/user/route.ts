@@ -15,7 +15,7 @@ export async function GET() {
             update: {},
         });
 
-        return NextResponse.json({ id: heatboardUser.id, address: heatboardUser.address, pseudo: baseUser.pseudo });
+        return NextResponse.json({ id: heatboardUser.id, address: heatboardUser.address });
     } catch (e) {
         console.log(e);
         return NextResponse.json({ ok: false }, { status: 500 });

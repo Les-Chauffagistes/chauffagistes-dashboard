@@ -1,5 +1,6 @@
 import useSWR from "swr"
 import { useRef } from "react";
+import { getMe } from "@/lib/auth";
 
 export type SessionUser = { id: string, pseudo: string, address: string | null }
 
@@ -8,9 +9,12 @@ export function useSession() {
   const { data, error, isLoading } = useSWR<SessionUser | null>(
     "/api/user",
     async (url) => {
+      const baseUser = await getMe();
+      if (!baseUser) return null;
       const r = await fetch(url);
       if (!r.ok) return null;
-      return r.json();
+      const heatboardUser = await r.json();
+      return { ...heatboardUser, pseudo: baseUser.pseudo };
     },
     {
       revalidateOnFocus: false,
