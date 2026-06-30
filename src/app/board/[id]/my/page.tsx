@@ -44,39 +44,39 @@ export default function LoginPage() {
     }, [user, userAddress]);
 
 
-    if (user === null) return <p className="profile-loading">Relecture de la blockchain...</p>;
+    if (user === undefined || linkedWorkers == null) return <p className="profile-loading">Relecture de la
+        blockchain...</p>;
     if (user) {
-        if (user.pseudo && linkedWorkers !== null) {
-            function updateAddress() {
-                if (addressRef.current === null) return;
-                patchUser({address: addressRef.current.value});
-            }
-
-            return (
-                <>
-                    <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
-                        <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""}/>
-                    </Popup>
-                    <div className="profile-page">
-                        <div className="profile-header">
-                            <Image src="/brand-icon.png" alt="logo" width={64} height={64} quality={100}/>
-                            <h1>{greeting(user.pseudo)}</h1>
-                            <p>Gérez votre compte et vos mineurs</p>
-                        </div>
-                        <div className="profile-content">
-                            <WorkerManager user={user} address={userAddress} setOpen={setOpen}
-                                           linkedWorkers={linkedWorkers}/>
-                            {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers}/>}
-                            <InviteFriends userAddress={userAddress}/>
-                            <button className="danger" style={{margin: "10px auto 0"}} onClick={async () => {
-                                await logOut();
-                            }}>Déconnexion
-                            </button>
-                        </div>
-                    </div>
-                </>
-            );
+        function updateAddress() {
+            if (addressRef.current === null) return;
+            patchUser({address: addressRef.current.value});
         }
+
+        return (
+            <>
+                <Popup title="Modifier l'adresse" open={open} setOpen={setOpen} handler={updateAddress}>
+                    <input ref={addressRef} type="text" id="popup-input" defaultValue={user.address ?? ""}/>
+                </Popup>
+                <div className="profile-page">
+                    <div className="profile-header">
+                        <Image src="/brand-icon.png" alt="logo" width={64} height={64} quality={100}/>
+                        <h1>{greeting(user.pseudo)}</h1>
+                        <p>Gérez votre compte et vos mineurs</p>
+                    </div>
+                    <div className="profile-content">
+                        <WorkerManager user={user} address={userAddress} setOpen={setOpen}
+                                       linkedWorkers={linkedWorkers}/>
+                        {linkedWorkers.length > 0 && <WorkerHint linkedWorkers={linkedWorkers}/>}
+                        <InviteFriends userAddress={userAddress}/>
+                        <button className="danger" style={{margin: "10px auto 0"}} onClick={async () => {
+                            await logOut();
+                        }}>Déconnexion
+                        </button>
+                    </div>
+                </div>
+            </>
+        );
+        
     }
 
     return <a href={`${config.AUTH_URL}/login?redirect=${config.BASE_URL}${path}`}>Se connecter</a>;
