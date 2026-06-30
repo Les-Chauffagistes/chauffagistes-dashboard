@@ -14,7 +14,6 @@ import { logOut } from "@/lib/auth";
 import Image from "next/image";
 import { useSession } from "@/app/hooks/useSession";
 import "./styles.css";
-import { isArray } from "node:util";
 
 export default function LoginPage() {
     const {user, isLoading} = useSession();
@@ -30,10 +29,10 @@ export default function LoginPage() {
         getLinkedWorkers(userAddress).then(d => setLinkedWorkers(d));
     }, [user, userAddress]);
 
-    if (isLoading || user === undefined || (user !== null && linkedWorkers === null)) return <p className="profile-loading">Relecture de la
-        blockchain...</p>;
+    if (isLoading || user === undefined) return <p className="profile-loading">Relecture de la blockchain...</p>;
 
     if (user) {
+        if (linkedWorkers === null) return <p className="profile-loading">Relecture de la blockchain...</p>;
         function updateAddress() {
             if (addressRef.current === null) return;
             patchUser({address: addressRef.current.value});
