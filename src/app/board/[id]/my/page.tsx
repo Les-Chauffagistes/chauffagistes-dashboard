@@ -9,7 +9,7 @@ import "./styles.css";
 import WorkerHint from "./components/WorkerHint";
 import { LinkedWorkers } from "../../../../../models/API Payloads/LinkedWorkers";
 import InviteFriends from "./components/InviteFriends";
-import { greeting } from "../../../../../lib/Greeting";
+import { greeting } from "../../../../lib/Greeting";
 import Image from "next/image";
 import { config } from "@/lib/config";
 import { logOut } from "@/lib/auth";

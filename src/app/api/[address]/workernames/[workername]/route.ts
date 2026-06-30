@@ -1,6 +1,6 @@
 import { prisma } from "@/server/Prisma";
 import { NextResponse } from "next/server";
-import randint from "../../../../../../lib/Random";
+import randint from "../../../../../lib/Random";
 import { getMe } from "@/lib/auth";
 import { getServerCookieHeader } from "@/lib/auth.server";
 
